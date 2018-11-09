@@ -62,11 +62,12 @@ void algo_unpacked(ap_uint<192> link_in[N_CH_IN], ap_uint<192> link_out[N_CH_OUT
 #pragma HLS UNROLL
       for(int iPhi = 0; iPhi < NCaloLayer2Phi; iPhi++){
 #pragma HLS UNROLL
-	 if(olink > N_CH_IN){
+	 int inlink = iPhi % NCaloLayer2Phi;
+	 
+	 if(inlink > N_CH_IN){
 	    std::cout<< "Input info exceed # of links"<<std::endl;
 	    exit(1);
 	 }
-	 int inlink = iPhi % NCaloLayer2Phi;
 
 	 int bLo1 = iCluster*32 + 32;
 	 int bHi1 = bLo1 + 2;
@@ -136,13 +137,14 @@ void algo_unpacked(ap_uint<192> link_in[N_CH_IN], ap_uint<192> link_out[N_CH_OUT
 #pragma HLS UNROLL
       for(int iPhi = 0; iPhi < NCaloLayer2Phi; iPhi++){
 #pragma HLS UNROLL
+	 
+	 int olink = iPhi % NCaloLayer2Phi;
 
 	 if(olink > N_CH_OUT){
 	    std::cout<< "Output info exceed # of links"<<std::endl;
 	    exit(1);
 	 }
 	       
-	 int olink = iPhi % NCaloLayer2Phi;
 	 //bit 0-8(reserved), 8-31(unused), 32-34(peakEta), 35-37(peakPhi), 38-43(towerEta), 44-47(towerPhi), 48-63(ET) 
 	 int bitLo1 = iCluster*32 + 32;
 	 int bitHi1 = bitLo1 + 2; 
