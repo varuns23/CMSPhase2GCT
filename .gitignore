@@ -1,0 +1,6 @@
+ip/
+directives.tcl
+*.directive
+*.jou
+*.log
+build/
