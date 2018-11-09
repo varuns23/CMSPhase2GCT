@@ -24,6 +24,7 @@ make
 
 STEP-2
 ```
+source /data/tools/Xilinx/Vivado/2018.2/settings64.sh
 cd /data/$USER/CMSPhase2HLS/CTP7-HLS
 
 git clone git@github.com:varuns23/CMSPhase2GCT.git

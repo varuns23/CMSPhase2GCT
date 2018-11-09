@@ -1,6 +1,9 @@
-#include "GCT.hh"
 #include <iostream>
+
+#include "GCT.hh"
+
 using namespace std;
+
 bool GCT(uint16_t peakEta_Neg[NClustersPerPhi][NCaloLayer2Phi],
 	 uint16_t peakPhi_Neg[NClustersPerPhi][NCaloLayer2Phi],
 	 uint16_t towerEta_Neg[NClustersPerPhi][NCaloLayer2Phi],
