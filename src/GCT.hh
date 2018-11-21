@@ -7,7 +7,7 @@ using namespace std;
 //According to one Layer 2 card
 const uint16_t NCaloLayer2Eta = 17; //17*2
 //const uint16_t NCaloLayer2Phi = 28; //6*4 + 2 on either side
-const uint16_t NCaloLayer2Phi = 20; //5*4 + 2 on either side
+const uint16_t NCaloLayer2Phi = 24; //5*4 + 2 on either side
 
 const uint16_t NClustersPerPhi = 3;
 const uint16_t NCaloLayer1Phi = 4;
