@@ -133,13 +133,12 @@ void algo_unpacked(ap_uint<192> link_in[N_CH_IN], ap_uint<192> link_out[N_CH_OUT
 
    bool success = GCT(peakEta_Neg,peakPhi_Neg,towerEta_Neg,towerPhi_Neg,ClusterET_Neg,peakEta_Pos,peakPhi_Pos,towerEta_Pos,towerPhi_Pos,ClusterET_Pos,outpeakEta_Neg,outpeakPhi_Neg,outtowerEta_Neg,outtowerPhi_Neg,outClusterET_Neg,outpeakEta_Pos,outpeakPhi_Pos,outtowerEta_Pos,outtowerPhi_Pos,outClusterET_Pos);
 
-   int olink;
    for(int iCluster = 0; iCluster < NClustersPerPhi ; iCluster++){
 #pragma HLS UNROLL
       for(int iPhi = 0; iPhi < NCaloLayer2Phi; iPhi++){
 #pragma HLS UNROLL
 
-	 olink = iPhi % NCaloLayer2Phi;
+	 int olink = iPhi % NCaloLayer2Phi;
 
 	 if(olink > N_CH_OUT){
 	    std::cout<< "Output info exceed # of links"<<std::endl;
@@ -177,7 +176,8 @@ void algo_unpacked(ap_uint<192> link_in[N_CH_IN], ap_uint<192> link_out[N_CH_OUT
 	 link_out[olink].range(191,bitLo6) = 0;
       }
    }
-   for (int idx = olink + 1; idx < N_CH_OUT; idx++) {
+
+   for (int idx = NCaloLayer2Phi; idx < N_CH_OUT; idx++) {
       link_out[idx] = 0;
    }    
 
