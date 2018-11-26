@@ -19,7 +19,7 @@ mkdir build
 git checkout io_links
 git submodule init; git submodule update
 cd hls_algo
-make
+make ARGV="ones_algo"
 ```
 
 STEP-2
@@ -29,13 +29,19 @@ cd /data/$USER/CMSPhase2HLS/CTP7-HLS
 
 git clone git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
-export CTP7_HLS_RUN_LABEL=test_tpg # Test input file is take from this label - default is test_data
 make clean # To remove remants from the previous build 
-make
+make ARGV="<test_vector>" # i.e. make ARGV="ones_algo"
 
 head -100 ip/algo_top_csynth.rpt
 
 ```
 
-To add a new test input file, please make <label>_inp.txt file in the data directory, and add it to the sources.tcl
-To use a different input file, export CTP7_HLS_RUN_LABEL=<label>
+STEP-3
+```
+# Compile post-implementation checkpoint (to be integrated in final bitile)
+make ARGV="<test_vector>" # i.e. make ARGV="ones_algo" dcp
+
+
+```
+
+To add a new test vector set, please make <test_vector>_inp.txt and <test_vector>_out_ref.txt  file in the data directory, and add it to the sources.tcl
