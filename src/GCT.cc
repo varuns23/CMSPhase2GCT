@@ -22,7 +22,7 @@ bool GCT(uint16_t peakEta_Neg[NClustersPerPhi][NCaloLayer2Phi],
          uint16_t outtowerPhi_Pos[NClustersPerPhi][NCaloLayer2Phi],
          uint16_t outClusterET_Pos[NClustersPerPhi][NCaloLayer2Phi])
 {
-#pragma HLS PIPELINE II=6
+#pragma HLS PIPELINE II=1
 #pragma HLS ARRAY_PARTITION variable=peakEta_Neg complete dim=0
 #pragma HLS ARRAY_PARTITION variable=peakPhi_Neg complete dim=0
 #pragma HLS ARRAY_PARTITION variable=towerEta_Neg complete dim=0
@@ -167,7 +167,7 @@ bool merge_acrosseta(uint16_t peakEta_t[NClustersPerPhi][NCaloLayer2Phi],
 		     )
 {
 
-#pragma HLS PIPELINE II=6
+#pragma HLS PIPELINE II=1
 #pragma HLS ARRAY_PARTITION variable=peakEta_t complete dim=0
 #pragma HLS ARRAY_PARTITION variable=peakPhi_t complete dim=0
 #pragma HLS ARRAY_PARTITION variable=ClusterET_t complete dim=0
@@ -263,7 +263,7 @@ bool merge_acrossphi(uint16_t peakEta[NClustersPerPhi][NCaloLayer2Phi],
 
 {
 
-#pragma HLS PIPELINE II=6
+#pragma HLS PIPELINE II=1
 #pragma HLS ARRAY_PARTITION variable=peakEta complete dim=0
 #pragma HLS ARRAY_PARTITION variable=peakPhi complete dim=0
 #pragma HLS ARRAY_PARTITION variable=towerEta complete dim=0
@@ -359,7 +359,7 @@ bool mergeClusters(uint16_t ieta1, uint16_t iphi1, uint16_t icet1,
                    uint16_t *eta2, uint16_t *phi2, uint16_t *cet2) {
   // Check that the clusters are neighbors in eta or phi                                                                                                                  
 
-#pragma HLS PIPELINE II=6
+#pragma HLS PIPELINE II=1
                              
   if(ieta1 == ieta2) {
     if(icet1 > icet2) {
@@ -402,7 +402,7 @@ bool mergeClusters1(uint16_t ieta1, uint16_t iphi1, uint16_t icet1,
                    uint16_t *eta2, uint16_t *phi2, uint16_t *cet2) {
   // Check that the clusters are neighbors in eta or phi                                                                                                                  
 
-#pragma HLS PIPELINE II=6
+#pragma HLS PIPELINE II=1
                              
   if(iphi1 == iphi2) {
     if(icet1 > icet2) {
