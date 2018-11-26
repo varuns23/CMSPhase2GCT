@@ -39,7 +39,7 @@ head -100 ip/algo_top_csynth.rpt
 STEP-3
 ```
 # Compile post-implementation checkpoint (to be integrated in final bitile)
-make ARGV="<test_vector>" dcp# i.e. make ARGV="ones_algo" dcp
+make ARGV="<test_vector>" dcp  # i.e. make ARGV="ones_algo" dcp
 
 
 ```
