@@ -1,7 +1,7 @@
 # CMSPhase2GCT
 CMS Phase2 GCT HLS Project
 
-This project uses CTP7-HLS from Ales Svetek
+This project uses APx_Gen0_Algo from Ales Svetek
 
 If you have already followed the instructions for RCT or have CMSPhase2HLS setup, GOTO STEP-2 else start with STEP-1 as mentioned below: 
 
