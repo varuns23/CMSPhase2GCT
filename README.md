@@ -13,20 +13,20 @@ cd /data/$USER/CMSPhase2HLS
 
 source /data/tools/Xilinx/Vivado/2018.2/settings64.sh
 
-git clone git@github.com:uwcms/CTP7-HLS.git
-cd CTP7-HLS/
-mkdir build
-git checkout io_links
-git submodule init; git submodule update
-cd hls_algo
+git lfs install
+git version
+git-lfs version
+git clone --recursive git@github.com:APxL1TAlgoDev/APx_Gen0_Algo.git
+cd APx_Gen0_Algo
+cd VivadoHls/null_algo/vivado_hls
+mkdir clean
 make ARGV="ones_algo"
 ```
 
 STEP-2
 ```
-source /data/tools/Xilinx/Vivado/2018.2/settings64.sh
-cd /data/$USER/CMSPhase2HLS/CTP7-HLS
 
+cd /data/$USER/CMSPhase2HLS
 git clone git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
 make clean # To remove remants from the previous build 
