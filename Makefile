@@ -1,5 +1,5 @@
 #define default target (synthesis without co-simulation)
-target: csyn_nocosim
+target: csyn
 
 export TOP_DIR = $(abspath $(PWD)/..)
 

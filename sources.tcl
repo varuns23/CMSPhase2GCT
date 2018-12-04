@@ -10,4 +10,8 @@ add_files ${PROJ_DIR}/src/GCT.cc
 add_files -tb ${PROJ_DIR}/../hls_algo/src/algo_top_tb.cpp -cflags ${CFLAGS}
 
 ### Add data files
-add_files -tb ${PROJ_DIR}/data/test_tpg_inp.txt
+add_files -tb ${PROJ_DIR}/data/zeros_algo_inp.txt
+add_files -tb ${PROJ_DIR}/data/zeros_algo_out_ref.txt
+
+add_files -tb ${PROJ_DIR}/data/ones_algo_inp.txt
+add_files -tb ${PROJ_DIR}/data/ones_algo_out_ref.txt
