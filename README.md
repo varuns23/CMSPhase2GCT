@@ -8,10 +8,10 @@ If you have already followed the instructions for RCT or have CMSPhase2HLS setup
 STEP-1 (starting from scratch):
 ```bash
 
-mkdir -p /data/$USER/CMSPhase2HLS
-cd /data/$USER/CMSPhase2HLS
+mkdir -p /scratch/$USER/CMSPhase2HLS
+cd /scratch/$USER/CMSPhase2HLS
 
-source /data/tools/Xilinx/Vivado/2018.2/settings64.sh
+source /opt/Xilinx/Vivado/2018.2/settings64.sh
 
 git lfs install
 git version
@@ -26,7 +26,7 @@ make ARGV="ones_algo"
 STEP-2
 ```
 
-cd /data/$USER/CMSPhase2HLS
+cd /scratch/$USER/CMSPhase2HLS
 git clone git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
 make clean # To remove remants from the previous build 
