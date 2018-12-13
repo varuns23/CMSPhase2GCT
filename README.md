@@ -21,7 +21,7 @@ cd APx_Gen0_Algo
 cd VivadoHls/null_algo/vivado_hls
 mkdir /scratch/$USER/CMSPhase2HLS/APx_Gen0_Algo/build
 make clean
-make ARGV="ones_algo"
+make ARGV="test1"
 ```
 
 STEP-2
@@ -31,7 +31,7 @@ cd /scratch/$USER/CMSPhase2HLS
 git clone git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
 make clean # To remove remants from the previous build 
-make ARGV="<test_vector>" # i.e. make ARGV="ones_algo"
+make ARGV="ones_algo" # i.e. make ARGV="<test vector name>" - data/<test vector name>_inp.txt and data/<test vector name>_out_ref.txt must exist
 
 head -100 ip/algo_top_csynth.rpt
 
