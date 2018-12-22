@@ -7,7 +7,7 @@ add_files ${PROJ_DIR}/src/algo_unpacked.cpp
 add_files ${PROJ_DIR}/src/GCT.cc
 
 ### Add testbed files
-add_files -tb ${TOP_DIR}/VivadoHls/null_algo_unpacked/vivado_hls/src/algo_top_tb.cpp -cflags ${CFLAGS}
+add_files -tb ${TOP_DIR}/VivadoHls/null_algo_unpacked/vivado_hls/src/algo_unpacked_tb.cpp  -cflags ${CFLAGS}
 
 ### Add data files
 add_files -tb ${PROJ_DIR}/data/zeros_algo_inp.txt
