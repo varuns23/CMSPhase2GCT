@@ -18,7 +18,7 @@ git version
 git-lfs version
 git clone --recursive git@github.com:APxL1TAlgoDev/APx_Gen0_Algo.git
 cd APx_Gen0_Algo
-cd VivadoHls/null_algo/vivado_hls
+cd VivadoHls/null_algo_unpacked/vivado_hls
 mkdir /scratch/$USER/CMSPhase2HLS/APx_Gen0_Algo/build
 make clean
 make ARGV="test1"
