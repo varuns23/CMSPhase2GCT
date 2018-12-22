@@ -1,5 +1,5 @@
 ## Set the top level module
-set_top algo_top
+set_top algo_unpacked
 ##
 #### Add source code
 #add_files ${TOP_DIR}/VivadoHls/null_algo_unpacked/vivado_hls/src/algo_top.cpp
