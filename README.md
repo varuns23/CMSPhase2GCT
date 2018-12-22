@@ -33,7 +33,7 @@ cd CMSPhase2GCT
 make clean # To remove remants from the previous build 
 make ARGV="ones_algo" # i.e. make ARGV="<test vector name>" - data/<test vector name>_inp.txt and data/<test vector name>_out_ref.txt must exist
 
-head -100 ip/algo_top_csynth.rpt
+head -100 ip/algo_unpacked_csynth.rpt
 
 ```
 
