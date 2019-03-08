@@ -28,7 +28,7 @@ STEP-2
 ```
 
 cd /scratch/$USER/CMSPhase2HLS
-git clone -b setup-2018 git@github.com:varuns23/CMSPhase2GCT.git
+git clone -b 2018-setup git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
 make clean # To remove remants from the previous build 
 make ARGV="ones_algo" # i.e. make ARGV="<test vector name>" - data/<test vector name>_inp.txt and data/<test vector name>_out_ref.txt must exist
