@@ -37,78 +37,67 @@ const uint16_t NoutClustersPerRCTRegion = 12; //8 after sorting
 const uint16_t NoutClustersPerEtaHalf = NoutRCTRegions * NoutClustersPerRCTRegion; 
 
 
- bool GCT(
-       uint16_t _peakEta_Neg   [NClustersPerEtaHalf],
-       uint16_t _peakPhi_Neg   [NClustersPerEtaHalf],
-       uint16_t _towerEta_Neg  [NClustersPerEtaHalf],
-       uint16_t _towerPhi_Neg  [NClustersPerEtaHalf],
-       uint16_t _ClusterET_Neg [NClustersPerEtaHalf],
-       uint16_t _peakEta_Pos   [NClustersPerEtaHalf],
-       uint16_t _peakPhi_Pos   [NClustersPerEtaHalf],
-       uint16_t _towerEta_Pos  [NClustersPerEtaHalf],
-       uint16_t _towerPhi_Pos  [NClustersPerEtaHalf],
-       uint16_t _ClusterET_Pos [NClustersPerEtaHalf],
-       uint16_t _outpeakEta_Neg   [NoutClustersPerEtaHalf],
-       uint16_t _outpeakPhi_Neg   [NoutClustersPerEtaHalf],
-       uint16_t _outtowerEta_Neg  [NoutClustersPerEtaHalf],
-       uint16_t _outtowerPhi_Neg  [NoutClustersPerEtaHalf],
-       uint16_t _outClusterET_Neg [NoutClustersPerEtaHalf],
-       uint16_t _outpeakEta_Pos   [NoutClustersPerEtaHalf],
-       uint16_t _outpeakPhi_Pos   [NoutClustersPerEtaHalf],
-       uint16_t _outtowerEta_Pos  [NoutClustersPerEtaHalf],
-       uint16_t _outtowerPhi_Pos  [NoutClustersPerEtaHalf],
-       uint16_t _outClusterET_Pos [NoutClustersPerEtaHalf]
- );
+bool GCT(
+      uint16_t _peakEta_Neg   [NClustersPerEtaHalf],
+      uint16_t _peakPhi_Neg   [NClustersPerEtaHalf],
+      uint16_t _towerEta_Neg  [NClustersPerEtaHalf],
+      uint16_t _towerPhi_Neg  [NClustersPerEtaHalf],
+      uint16_t _ClusterET_Neg [NClustersPerEtaHalf],
+      uint16_t _peakEta_Pos   [NClustersPerEtaHalf],
+      uint16_t _peakPhi_Pos   [NClustersPerEtaHalf],
+      uint16_t _towerEta_Pos  [NClustersPerEtaHalf],
+      uint16_t _towerPhi_Pos  [NClustersPerEtaHalf],
+      uint16_t _ClusterET_Pos [NClustersPerEtaHalf],
+      uint16_t _outpeakEta_Neg   [NoutClustersPerEtaHalf],
+      uint16_t _outpeakPhi_Neg   [NoutClustersPerEtaHalf],
+      uint16_t _outtowerEta_Neg  [NoutClustersPerEtaHalf],
+      uint16_t _outtowerPhi_Neg  [NoutClustersPerEtaHalf],
+      uint16_t _outClusterET_Neg [NoutClustersPerEtaHalf],
+      uint16_t _outpeakEta_Pos   [NoutClustersPerEtaHalf],
+      uint16_t _outpeakPhi_Pos   [NoutClustersPerEtaHalf],
+      uint16_t _outtowerEta_Pos  [NoutClustersPerEtaHalf],
+      uint16_t _outtowerPhi_Pos  [NoutClustersPerEtaHalf],
+      uint16_t _outClusterET_Pos [NoutClustersPerEtaHalf]
+);
 
 
- bool merge_acrossphi(
-       uint16_t _peakEta   [NinGCTPhi][NGCTEta],
-       uint16_t _peakPhi   [NinGCTPhi][NGCTEta],
-       uint16_t _ClusterET [NinGCTPhi][NGCTEta],
-       uint16_t _outpeakEta   [NinGCTPhi][NGCTEta],
-       uint16_t _outpeakPhi   [NinGCTPhi][NGCTEta],
-       uint16_t _outClusterET [NinGCTPhi][NGCTEta]
-       );
+bool merge_acrossPhi(
+      uint16_t _peakEta   [NinGCTPhi][NGCTEta],
+      uint16_t _peakPhi   [NinGCTPhi][NGCTEta],
+      uint16_t _ClusterET [NinGCTPhi][NGCTEta],
+      uint16_t _outpeakEta   [NinGCTPhi][NGCTEta],
+      uint16_t _outpeakPhi   [NinGCTPhi][NGCTEta],
+      uint16_t _outClusterET [NinGCTPhi][NGCTEta]
+      );
 
 
-//-- bool merge_acrosseta(
-//--       uint16_t peakEta_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t peakPhi_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t towerEta_Neg  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t towerPhi_Neg  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t ClusterET_Neg [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t peakEta_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t peakPhi_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t towerEta_Pos  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t towerPhi_Pos  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t ClusterET_Pos [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion],
-//--       uint16_t outpeakEta_Neg   [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outpeakPhi_Neg   [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outtowerEta_Neg  [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outtowerPhi_Neg  [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outClusterET_Neg [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outpeakEta_Pos   [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outpeakPhi_Pos   [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outtowerEta_Pos  [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outtowerPhi_Pos  [NoutRCTRegions][NClustersPerRCTRegion],
-//--       uint16_t outClusterET_Pos [NoutRCTRegions][NClustersPerRCTRegion]
-//--       );
-//-- 
-//-- 
-//-- 
- bool mergeClustersInEta(
-       uint16_t ieta1, uint16_t iphi1, uint16_t icet1,
-       uint16_t ieta2, uint16_t iphi2, uint16_t icet2,
-       uint16_t *eta1, uint16_t *phi1, uint16_t *cet1,
-       uint16_t *eta2, uint16_t *phi2, uint16_t *cet2
-       );
-//-- 
-//-- 
-//-- bool mergeClustersInPhi(
-//--       uint16_t ieta1, uint16_t iphi1, uint16_t icet1,
-//--       uint16_t ieta2, uint16_t iphi2, uint16_t icet2,
-//--       uint16_t *eta1, uint16_t *phi1, uint16_t *cet1,
-//--       uint16_t *eta2, uint16_t *phi2, uint16_t *cet2
-//--       );
+bool merge_acrossEta(
+      uint16_t _peakEta_Neg   [NinGCTPhi][NGCTEta],
+      uint16_t _peakPhi_Neg   [NinGCTPhi][NGCTEta],
+      uint16_t _ClusterET_Neg [NinGCTPhi][NGCTEta],
+      uint16_t _peakEta_Pos   [NinGCTPhi][NGCTEta],
+      uint16_t _peakPhi_Pos   [NinGCTPhi][NGCTEta],
+      uint16_t _ClusterET_Pos [NinGCTPhi][NGCTEta],
+      uint16_t _outpeakEta_Neg   [NinGCTPhi][NGCTEta],
+      uint16_t _outpeakPhi_Neg   [NinGCTPhi][NGCTEta],
+      uint16_t _outClusterET_Neg [NinGCTPhi][NGCTEta],
+      uint16_t _outpeakEta_Pos   [NinGCTPhi][NGCTEta],
+      uint16_t _outpeakPhi_Pos   [NinGCTPhi][NGCTEta],
+      uint16_t _outClusterET_Pos [NinGCTPhi][NGCTEta]
+      );
+
+bool mergeClustersInEta(
+      uint16_t ieta1, uint16_t iphi1, uint16_t icet1,
+      uint16_t ieta2, uint16_t iphi2, uint16_t icet2,
+      uint16_t *eta1, uint16_t *phi1, uint16_t *cet1,
+      uint16_t *eta2, uint16_t *phi2, uint16_t *cet2
+      );
+
+bool mergeClustersInPhi(
+      uint16_t ieta1, uint16_t iphi1, uint16_t icet1,
+      uint16_t ieta2, uint16_t iphi2, uint16_t icet2,
+      uint16_t *eta1, uint16_t *phi1, uint16_t *cet1,
+      uint16_t *eta2, uint16_t *phi2, uint16_t *cet2
+      );
 
 #endif
