@@ -5,7 +5,7 @@ set_top algo_unpacked
 add_files src/algo_unpacked.cpp
 add_files src/GCT.cc
 add_files src/stitch_acrossEta.cc
-#add_files src/stitch_acrossPhi.cc
+add_files src/stitch_acrossPhi.cc
 #
 ### Add testbed files
 add_files -tb src/algo_unpacked_tb.cpp 

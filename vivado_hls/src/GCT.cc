@@ -1,5 +1,6 @@
 #include "GCT.hh"
 #include "stitch_acrossEta.hh"
+#include "stitch_acrossPhi.hh"
 #include <iostream>
 
 using namespace std;
@@ -51,29 +52,29 @@ bool GCT(
 #pragma HLS ARRAY_PARTITION variable=outtowerPhi_Pos  complete dim=0
 #pragma HLS ARRAY_PARTITION variable=outClusterET_Pos complete dim=0
 
-   //-   uint16_t toMerge_peakEta_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_peakPhi_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_towerEta_Neg  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_towerPhi_Neg  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_ClusterET_Neg [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-
-   //-   uint16_t toMerge_peakEta_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_peakPhi_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_towerEta_Pos  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_towerPhi_Pos  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-   uint16_t toMerge_ClusterET_Pos [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
-   //-
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_peakEta_Neg    complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_peakPhi_Neg    complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_towerEta_Neg   complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_towerPhi_Neg   complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_ClusterET_Neg  complete dim=0
-   //- 
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_peakEta_Pos    complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_peakPhi_Pos    complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_towerEta_Pos   complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_towerPhi_Pos   complete dim=0
-   //- #pragma HLS ARRAY_PARTITION variable=toMerge_ClusterET_Pos  complete dim=0
+   uint16_t toMerge_peakEta_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_peakPhi_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_towerEta_Neg  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_towerPhi_Neg  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_ClusterET_Neg [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+
+   uint16_t toMerge_peakEta_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_peakPhi_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_towerEta_Pos  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_towerPhi_Pos  [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+   uint16_t toMerge_ClusterET_Pos [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
+
+#pragma HLS ARRAY_PARTITION variable=toMerge_peakEta_Neg    complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_peakPhi_Neg    complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_towerEta_Neg   complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_towerPhi_Neg   complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_ClusterET_Neg  complete dim=0
+
+#pragma HLS ARRAY_PARTITION variable=toMerge_peakEta_Pos    complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_peakPhi_Pos    complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_towerEta_Pos   complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_towerPhi_Pos   complete dim=0
+#pragma HLS ARRAY_PARTITION variable=toMerge_ClusterET_Pos  complete dim=0
 
    uint16_t mergedpeakEta_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
    uint16_t mergedpeakPhi_Neg   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
@@ -105,28 +106,28 @@ bool GCT(
       for(int inCluster=0; inCluster<NClustersPerRCTRegion; ++inCluster){
 #pragma HLS UNROLL
 
-	 //- 	 toMerge_peakEta_Neg   [inPhi][inCluster] = 0;
-	 //- 	 toMerge_peakPhi_Neg   [inPhi][inCluster] = 0;
-	 //- 	 toMerge_towerEta_Neg  [inPhi][inCluster] = 0;
-	 //- 	 toMerge_towerPhi_Neg  [inPhi][inCluster] = 0;
-	 //- 	 toMerge_ClusterET_Neg [inPhi][inCluster] = 0;
-	 //- 
-	 //- 	 toMerge_peakEta_Pos   [inPhi][inCluster] = 0;
-	 //- 	 toMerge_peakPhi_Pos   [inPhi][inCluster] = 0;
-	 //- 	 toMerge_towerEta_Pos  [inPhi][inCluster] = 0;
-	 //- 	 toMerge_towerPhi_Pos  [inPhi][inCluster] = 0;
-	 //- 	 toMerge_ClusterET_Pos [inPhi][inCluster] = 0;
+	 toMerge_peakEta_Neg   [inPhi][inCluster] = 0;
+	 toMerge_peakPhi_Neg   [inPhi][inCluster] = 0;
+	 toMerge_towerEta_Neg  [inPhi][inCluster] = 0;
+	 toMerge_towerPhi_Neg  [inPhi][inCluster] = 40;
+	 toMerge_ClusterET_Neg [inPhi][inCluster] = 0;
+
+	 toMerge_peakEta_Pos   [inPhi][inCluster] = 0;
+	 toMerge_peakPhi_Pos   [inPhi][inCluster] = 0;
+	 toMerge_towerEta_Pos  [inPhi][inCluster] = 0;
+	 toMerge_towerPhi_Pos  [inPhi][inCluster] = 40;
+	 toMerge_ClusterET_Pos [inPhi][inCluster] = 0;
 
 	 mergedpeakEta_Neg   [inPhi][inCluster] = 0;
 	 mergedpeakPhi_Neg   [inPhi][inCluster] = 0;
 	 mergedtowerEta_Neg  [inPhi][inCluster] = 0;
-	 mergedtowerPhi_Neg  [inPhi][inCluster] = 0;
+	 mergedtowerPhi_Neg  [inPhi][inCluster] = 40;
 	 mergedClusterET_Neg [inPhi][inCluster] = 0;
 
 	 mergedpeakEta_Pos   [inPhi][inCluster] = 0;
 	 mergedpeakPhi_Pos   [inPhi][inCluster] = 0;
 	 mergedtowerEta_Pos  [inPhi][inCluster] = 0;
-	 mergedtowerPhi_Pos  [inPhi][inCluster] = 0;
+	 mergedtowerPhi_Pos  [inPhi][inCluster] = 40;
 	 mergedClusterET_Pos [inPhi][inCluster] = 0;
 
 	 /*
@@ -149,32 +150,32 @@ bool GCT(
    }
 
    //merge across phi in negative eta
-   //-   merge_acrossphi(
-   //-	 peakEta_Neg,
-   //-	 peakPhi_Neg,
-   //-	 towerEta_Neg,
-   //-	 towerPhi_Neg,
-   //-	 ClusterET_Neg,
-   //-	 toMerge_peakEta_Neg,
-   //-	 toMerge_peakPhi_Neg,
-   //-	 toMerge_towerEta_Neg,
-   //-	 toMerge_towerPhi_Neg,
-   //-	 toMerge_ClusterET_Neg
-   //-	 );
+   stitch_acrossPhi(
+	 peakEta_Neg,
+	 peakPhi_Neg,
+	 towerEta_Neg,
+	 towerPhi_Neg,
+	 ClusterET_Neg,
+	 toMerge_peakEta_Neg,
+	 toMerge_peakPhi_Neg,
+	 toMerge_towerEta_Neg,
+	 toMerge_towerPhi_Neg,
+	 toMerge_ClusterET_Neg
+	 );
 
    //merge across phi in positive eta
-   //--   merge_acrossphi(
-   //--	 peakEta_Pos,
-   //--	 peakPhi_Pos,
-   //--	 towerEta_Pos,
-   //--	 towerPhi_Pos,
-   //--	 ClusterET_Pos,
-   //--	 toMerge_peakEta_Pos,
-   //--	 toMerge_peakPhi_Pos,
-   //--	 toMerge_towerEta_Pos,
-   //--	 toMerge_towerPhi_Pos,
-   //--	 toMerge_ClusterET_Pos
-   //--	 );
+   stitch_acrossPhi(
+	 peakEta_Pos,
+	 peakPhi_Pos,
+	 towerEta_Pos,
+	 towerPhi_Pos,
+	 ClusterET_Pos,
+	 toMerge_peakEta_Pos,
+	 toMerge_peakPhi_Pos,
+	 toMerge_towerEta_Pos,
+	 toMerge_towerPhi_Pos,
+	 toMerge_ClusterET_Pos
+	 );
 
 
 
@@ -210,17 +211,29 @@ bool GCT(
 	 outpeakEta_Neg   [ii][jj] = mergedpeakEta_Neg   [ii+1][jj];
 	 outpeakPhi_Neg   [ii][jj] = mergedpeakPhi_Neg   [ii+1][jj];
 	 outtowerEta_Neg  [ii][jj] = mergedtowerEta_Neg  [ii+1][jj];
-	 outtowerPhi_Neg  [ii][jj] = mergedtowerPhi_Neg  [ii+1][jj];
+	 outtowerPhi_Neg  [ii][jj] = mergedtowerPhi_Neg  [ii+1][jj]-4;
 	 outClusterET_Neg [ii][jj] = mergedClusterET_Neg [ii+1][jj];
 
 	 outpeakEta_Pos   [ii][jj] = mergedpeakEta_Pos   [ii+1][jj];
 	 outpeakPhi_Pos   [ii][jj] = mergedpeakPhi_Pos   [ii+1][jj];
 	 outtowerEta_Pos  [ii][jj] = mergedtowerEta_Pos  [ii+1][jj];
-	 outtowerPhi_Pos  [ii][jj] = mergedtowerPhi_Pos  [ii+1][jj];
+	 outtowerPhi_Pos  [ii][jj] = mergedtowerPhi_Pos  [ii+1][jj]-4;
 	 outClusterET_Pos [ii][jj] = mergedClusterET_Pos [ii+1][jj];
 
-	/* 
-		 cout<<outClusterET_Pos [ii][jj]<<" "<<setw(5);
+	 //-	 outpeakEta_Neg   [ii][jj] = toMerge_peakEta_Neg   [ii+1][jj];
+	 //-	 outpeakPhi_Neg   [ii][jj] = toMerge_peakPhi_Neg   [ii+1][jj];
+	 //-	 outtowerEta_Neg  [ii][jj] = toMerge_towerEta_Neg  [ii+1][jj];
+	 //-	 outtowerPhi_Neg  [ii][jj] = toMerge_towerPhi_Neg  [ii+1][jj]-4;
+	 //-	 outClusterET_Neg [ii][jj] = toMerge_ClusterET_Neg [ii+1][jj];
+	 //-
+	 //-	 outpeakEta_Pos   [ii][jj] = toMerge_peakEta_Pos   [ii+1][jj];
+	 //-	 outpeakPhi_Pos   [ii][jj] = toMerge_peakPhi_Pos   [ii+1][jj];
+	 //-	 outtowerEta_Pos  [ii][jj] = toMerge_towerEta_Pos  [ii+1][jj];
+	 //-	 outtowerPhi_Pos  [ii][jj] = toMerge_towerPhi_Pos  [ii+1][jj]-4;
+	 //-	 outClusterET_Pos [ii][jj] = toMerge_ClusterET_Pos [ii+1][jj];
+
+	 /*
+	    cout<<outClusterET_Pos [ii][jj]<<" "<<setw(5);
 	 //    	 cout<<std::hex<< ClusterET_Pos [ii][jj]<<std::dec<<" "<<setw(5);
 	 cout<<outtowerPhi_Pos  [ii][jj]<<" "<<setw(5);
 	 cout<<outtowerEta_Pos  [ii][jj]<<" "<<setw(5);
@@ -234,7 +247,7 @@ bool GCT(
 	 cout<<outpeakPhi_Neg   [ii][jj]<<" "<<setw(5);
 	 cout<<outpeakEta_Neg   [ii][jj]<<endl;
 	 //    	 cout<<"------------------------------------"<<endl;
-	*/
+	 */
       }
    }
 
