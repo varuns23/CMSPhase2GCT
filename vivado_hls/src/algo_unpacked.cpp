@@ -30,6 +30,11 @@ void algo_unpacked(ap_uint<192> link_in[N_CH_IN], ap_uint<192> link_out[N_CH_OUT
 
 ap_uint<192> link_out_pos[N_CH_OUT];
 ap_uint<192> link_out_neg[N_CH_OUT];
+for (int i = 0; i < N_CH_OUT; i++){
+	link_out_pos[i] = 0;
+	link_out_neg[i] = 0;
+}
+
    // null algo specific pragma: avoid fully combinatorial algo by specifying min latency
    // otherwise algorithm clock input (ap_clk) gets optimized away
 #pragma HLS latency min=3
