@@ -181,16 +181,16 @@ bool GCT(
 
    //merge across eta
    stitch_acrossEta(
-	 peakEta_Neg,
-	 peakPhi_Neg,
-	 towerEta_Neg,
-	 towerPhi_Neg,
-	 ClusterET_Neg,
-	 peakEta_Pos,
-	 peakPhi_Pos,
-	 towerEta_Pos,
-	 towerPhi_Pos,
-	 ClusterET_Pos,
+	 toMerge_peakEta_Neg,
+	 toMerge_peakPhi_Neg,
+	 toMerge_towerEta_Neg,
+	 toMerge_towerPhi_Neg,
+	 toMerge_ClusterET_Neg,
+	 toMerge_peakEta_Pos,
+	 toMerge_peakPhi_Pos,
+	 toMerge_towerEta_Pos,
+	 toMerge_towerPhi_Pos,
+	 toMerge_ClusterET_Pos,
 	 mergedpeakEta_Neg,
 	 mergedpeakPhi_Neg,
 	 mergedtowerEta_Neg,
@@ -232,7 +232,7 @@ bool GCT(
 	 //-	 outtowerPhi_Pos  [ii][jj] = toMerge_towerPhi_Pos  [ii+1][jj]-4;
 	 //-	 outClusterET_Pos [ii][jj] = toMerge_ClusterET_Pos [ii+1][jj];
 
-	 /*
+	/* 
 	    cout<<outClusterET_Pos [ii][jj]<<" "<<setw(5);
 	 //    	 cout<<std::hex<< ClusterET_Pos [ii][jj]<<std::dec<<" "<<setw(5);
 	 cout<<outtowerPhi_Pos  [ii][jj]<<" "<<setw(5);
@@ -247,7 +247,7 @@ bool GCT(
 	 cout<<outpeakPhi_Neg   [ii][jj]<<" "<<setw(5);
 	 cout<<outpeakEta_Neg   [ii][jj]<<endl;
 	 //    	 cout<<"------------------------------------"<<endl;
-	 */
+	*/
       }
    }
 

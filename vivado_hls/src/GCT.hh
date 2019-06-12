@@ -30,6 +30,9 @@ const uint16_t NoutGCTPhi = 16; //CTP7: 4*4
 const uint16_t NClustersPerPhi = 3;
 const uint16_t NRCTPhi = 4;
 
+const uint16_t offsettPhi = 4; // 4 Phi per RCT region (4x5 or 4x17)
+const uint16_t offsettEta = 5; // CTP7:5, VU9P:17 (4x5 or 4x17)
+
 const uint16_t NRCTRegionsPerEtaHalf = 6; //1 + 4 + 1; VU9P: 1+6+1
 const uint16_t NClustersPerRCTRegion = 12;
 

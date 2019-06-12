@@ -28,21 +28,14 @@ void algo_unpacked(ap_uint<192> link_in[N_CH_IN], ap_uint<192> link_out[N_CH_OUT
 #pragma HLS PIPELINE II=3
 #pragma HLS INTERFACE ap_ctrl_hs port=return
 
-ap_uint<192> link_out_pos[N_CH_OUT];
-ap_uint<192> link_out_neg[N_CH_OUT];
+ap_uint<192> tmp_link_out[N_CH_OUT];
 for (int i = 0; i < N_CH_OUT; i++){
-	link_out_pos[i] = 0;
-	link_out_neg[i] = 0;
+	tmp_link_out[i] = 0;
 }
 
    // null algo specific pragma: avoid fully combinatorial algo by specifying min latency
    // otherwise algorithm clock input (ap_clk) gets optimized away
 #pragma HLS latency min=3
-
-//   for (uint16_t lnk = 0; lnk < N_CH_OUT; lnk++) {
-//#pragma HLS UNROLL
-//      link_out[lnk] = 0;
-//   }
 
 #ifndef ALGO_PASSTHROUGH
 
@@ -90,36 +83,36 @@ for (int i = 0; i < N_CH_OUT; i++){
 	 uint16_t bHi1 = bLo1 + 2;
 	 peakEta_Pos[iRCT][iCluster] = link_in[inlink].range(bHi1, bLo1);
 	 peakEta_Neg[iRCT][iCluster] = link_in[inlink + (N_CH_IN/2)].range(bHi1, bLo1);
-	 if(first) std::cout<<"peakEta_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi1<<", "<<bLo1<<"): "<<link_in[inlink].range(bHi1, bLo1)<<std::endl;
-	 if(first) std::cout<<"peakEta_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi1<<", "<<bLo1<<"): "<<link_in[inlink + (N_CH_IN/2)].range(bHi1, bLo1)<<std::endl;
+	 if(first) std::cout<<"peakEta_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi1<<", "<<bLo1<<"): "<<peakEta_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"peakEta_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi1<<", "<<bLo1<<"): "<<peakEta_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo2 = bHi1 + 1; 
 	 uint16_t bHi2 = bLo2 + 2;
 	 peakPhi_Pos[iRCT][iCluster]  = link_in[inlink].range(bHi2, bLo2);
 	 peakPhi_Neg[iRCT][iCluster]  = link_in[inlink + (N_CH_IN/2)].range(bHi2, bLo2);
-	 if(first) std::cout<<"peakPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi2<<", "<<bLo2<<"): "<<link_in[inlink].range(bHi2, bLo2)<<std::endl;
-	 if(first) std::cout<<"peakPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi2<<", "<<bLo2<<"): "<<link_in[inlink + (N_CH_IN/2)].range(bHi2, bLo2)<<std::endl;
+	 if(first) std::cout<<"peakPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi2<<", "<<bLo2<<"): "<<peakPhi_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"peakPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi2<<", "<<bLo2<<"): "<<peakPhi_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo3 = bHi2 + 1; 
 	 uint16_t bHi3 = bLo3 + 5;
 	 towerEta_Pos[iRCT][iCluster]  = link_in[inlink].range(bHi3, bLo3);
-	 towerEta_Neg[iRCT][iCluster]  = link_in[inlink + (N_CH_IN/2)].range(bHi3, bLo3);
-	 if(first) std::cout<<"towerEta_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi3<<", "<<bLo3<<"): "<<link_in[inlink].range(bHi3, bLo3)<<std::endl;
-	 if(first) std::cout<<"towerEta_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi3<<", "<<bLo3<<"): "<<link_in[inlink + (N_CH_IN/2)].range(bHi3, bLo3)<<std::endl;
+	 towerEta_Neg[iRCT][iCluster]  = offsettEta + link_in[inlink + (N_CH_IN/2)].range(bHi3, bLo3);
+	 if(first) std::cout<<"towerEta_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi3<<", "<<bLo3<<"): "<<towerEta_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"towerEta_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi3<<", "<<bLo3<<"): "<<towerEta_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo4 = bHi3 + 1; 
 	 uint16_t bHi4 = bLo4 + 3;
-	 towerPhi_Pos[iRCT][iCluster]  = link_in[inlink].range(bHi4, bLo4);
-	 towerPhi_Neg[iRCT][iCluster]  = link_in[inlink + (N_CH_IN/2)].range(bHi4, bLo4);
-	 if(first) std::cout<<"towerPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi4<<", "<<bLo4<<"): "<<link_in[inlink].range(bHi4, bLo4)<<std::endl;
-	 if(first) std::cout<<"towerPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi4<<", "<<bLo4<<"): "<<link_in[inlink + (N_CH_IN/2)].range(bHi4, bLo4)<<std::endl;
+	 towerPhi_Pos[iRCT][iCluster]  = iRCT*offsettPhi + link_in[inlink].range(bHi4, bLo4);
+	 towerPhi_Neg[iRCT][iCluster]  = iRCT*offsettPhi + link_in[inlink + (N_CH_IN/2)].range(bHi4, bLo4);
+	 if(first) std::cout<<"towerPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi4<<", "<<bLo4<<"): "<<towerPhi_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"towerPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi4<<", "<<bLo4<<"): "<<towerPhi_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo5 = bHi4 + 1; 
 	 uint16_t bHi5 = bLo5 + 15;
 	 ClusterET_Pos[iRCT][iCluster] = link_in[inlink].range(bHi5, bLo5);
 	 ClusterET_Neg[iRCT][iCluster] = link_in[inlink + (N_CH_IN/2)].range(bHi5, bLo5);
-	 if(first) std::cout<<"ClusterET_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi5<<", "<<bLo5<<"): "<<link_in[inlink].range(bHi5, bLo5)<<std::endl;
-	 if(first) std::cout<<"ClusterET_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi5<<", "<<bLo5<<"): "<<link_in[inlink + (N_CH_IN/2)].range(bHi5, bLo5)<<std::endl;
+	 if(first) std::cout<<"ClusterET_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi5<<", "<<bLo5<<"): "<<ClusterET_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"ClusterET_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi5<<", "<<bLo5<<"): "<<ClusterET_Neg[iRCT][iCluster]<<std::endl;
       }
    }
 
@@ -204,49 +197,36 @@ for (int i = 0; i < N_CH_OUT; i++){
 	 //bit 0-8(reserved), 8-31(unused), 32-34(peakEta), 35-37(peakPhi), 38-43(towerEta), 44-47(towerPhi), 48-63(ET) 
 	 uint16_t bitLo1 = (iCluster % NClustersPerPhi)*32 + 32;
 	 uint16_t bitHi1 = bitLo1 + 2; 
-	 link_out_pos[olink].range(bitHi1, bitLo1) = ap_uint<3>(outpeakEta_Pos[iRegion][iCluster]);
-	 link_out_neg[olink + (N_CH_OUT/2)]  .range(bitHi1, bitLo1) = ap_uint<3>(outpeakEta_Neg[iRegion][iCluster]);
-	// link_out[olink]                 .range(bitHi1, bitLo1) = ap_uint<3>(outpeakEta_Pos[iRegion][iCluster]);
-	// link_out[olink + (N_CH_OUT/2)]  .range(bitHi1, bitLo1) = ap_uint<3>(outpeakEta_Neg[iRegion][iCluster]);
-	 if(first) std::cout<<"link_out["<<olink<<"] = .range("<<bitHi1<<", "<<bitLo1<<"): outpeakEta_Pos["<<iRegion<<"]["<<iCluster<<"]= "<<outpeakEta_Pos[iRegion][iCluster]<<std::endl;
-	 if(first) std::cout<<"link_out["<<olink + (N_CH_OUT/2)<<"] = .range("<<bitHi1<<", "<<bitLo1<<"): outpeakEta_Neg["<<iRegion<<"]["<<iCluster<<"]= "<<outpeakEta_Neg[iRegion][iCluster]<<std::endl;
+	 tmp_link_out[olink]                 .range(bitHi1, bitLo1) = ap_uint<3>(outpeakEta_Pos[iRegion][iCluster]);
+	 tmp_link_out[olink + (N_CH_OUT/2)]  .range(bitHi1, bitLo1) = ap_uint<3>(outpeakEta_Neg[iRegion][iCluster]);
+	 if(first) std::cout<<"tmp_link_out["<<olink<<"] = .range("<<bitHi1<<", "<<bitLo1<<"): outpeakEta_Pos["<<iRegion<<"]["<<iCluster<<"]= "<<outpeakEta_Pos[iRegion][iCluster]<<std::endl;
+	 if(first) std::cout<<"tmp_link_out["<<olink + (N_CH_OUT/2)<<"] = .range("<<bitHi1<<", "<<bitLo1<<"): outpeakEta_Neg["<<iRegion<<"]["<<iCluster<<"]= "<<outpeakEta_Neg[iRegion][iCluster]<<std::endl;
 
 	 uint16_t bitLo2 = bitHi1 + 1;
 	 uint16_t bitHi2 = bitLo2 + 2;
-	 link_out_pos[olink]                 .range(bitHi2, bitLo2) = ap_uint<3>(outpeakPhi_Pos[iRegion][iCluster]);
-	 link_out_neg[olink + (N_CH_OUT/2)]  .range(bitHi2, bitLo2) = ap_uint<3>(outpeakPhi_Neg[iRegion][iCluster]);
-	 //link_out[olink]                 .range(bitHi2, bitLo2) = ap_uint<3>(outpeakPhi_Pos[iRegion][iCluster]);
-	 //link_out[olink + (N_CH_OUT/2)]  .range(bitHi2, bitLo2) = ap_uint<3>(outpeakPhi_Neg[iRegion][iCluster]);
+	 tmp_link_out[olink]                 .range(bitHi2, bitLo2) = ap_uint<3>(outpeakPhi_Pos[iRegion][iCluster]);
+	 tmp_link_out[olink + (N_CH_OUT/2)]  .range(bitHi2, bitLo2) = ap_uint<3>(outpeakPhi_Neg[iRegion][iCluster]);
 
 	 uint16_t bitLo3 = bitHi2 + 1;
 	 uint16_t bitHi3 = bitLo3 + 5;
-	 link_out_pos[olink]                 .range(bitHi3, bitLo3) = ap_uint<6>(outtowerEta_Pos[iRegion][iCluster]);
-	 link_out_neg[olink + (N_CH_OUT/2)]  .range(bitHi3, bitLo3) = ap_uint<6>(outtowerEta_Neg[iRegion][iCluster]);
-	 //link_out[olink]                 .range(bitHi3, bitLo3) = ap_uint<6>(outtowerEta_Pos[iRegion][iCluster]);
-	 //link_out[olink + (N_CH_OUT/2)]  .range(bitHi3, bitLo3) = ap_uint<6>(outtowerEta_Neg[iRegion][iCluster]);
+	 tmp_link_out[olink]                 .range(bitHi3, bitLo3) = ap_uint<6>(outtowerEta_Pos[iRegion][iCluster]);
+	 tmp_link_out[olink + (N_CH_OUT/2)]  .range(bitHi3, bitLo3) = ap_uint<6>(outtowerEta_Neg[iRegion][iCluster]);
 
 	 uint16_t bitLo4 = bitHi3 + 1;
 	 uint16_t bitHi4 = bitLo4 + 3;
-	 link_out_pos[olink]                 .range(bitHi4, bitLo4) = ap_uint<4>(outtowerPhi_Pos[iRegion][iCluster]);
-	 link_out_neg[olink + (N_CH_OUT/2)]  .range(bitHi4, bitLo4) = ap_uint<4>(outtowerPhi_Neg[iRegion][iCluster]);
-	 //link_out[olink]                 .range(bitHi4, bitLo4) = ap_uint<4>(outtowerPhi_Pos[iRegion][iCluster]);
-	 //link_out[olink + (N_CH_OUT/2)]  .range(bitHi4, bitLo4) = ap_uint<4>(outtowerPhi_Neg[iRegion][iCluster]);
+	 tmp_link_out[olink]                 .range(bitHi4, bitLo4) = ap_uint<4>(outtowerPhi_Pos[iRegion][iCluster]);
+	 tmp_link_out[olink + (N_CH_OUT/2)]  .range(bitHi4, bitLo4) = ap_uint<4>(outtowerPhi_Neg[iRegion][iCluster]);
 
 	 uint16_t bitLo5 = bitHi4 + 1;
 	 uint16_t bitHi5 = bitLo5 + 15;
-	 link_out_pos[olink]                 .range(bitHi5, bitLo5) = ap_uint<16>(outClusterET_Pos[iRegion][iCluster]);
-	 link_out_neg[olink + (N_CH_OUT/2)]  .range(bitHi5, bitLo5) = ap_uint<16>(outClusterET_Neg[iRegion][iCluster]);
-	 //link_out[olink]                 .range(bitHi5, bitLo5) = ap_uint<16>(outClusterET_Pos[iRegion][iCluster]);
-	 //link_out[olink + (N_CH_OUT/2)]  .range(bitHi5, bitLo5) = ap_uint<16>(outClusterET_Neg[iRegion][iCluster]);
+	 tmp_link_out[olink]                 .range(bitHi5, bitLo5) = ap_uint<16>(outClusterET_Pos[iRegion][iCluster]);
+	 tmp_link_out[olink + (N_CH_OUT/2)]  .range(bitHi5, bitLo5) = ap_uint<16>(outClusterET_Neg[iRegion][iCluster]);
 
-	 //uint16_t bitLo6 = bitHi5 + 1;
-	 //link_out[olink].range(191,bitLo6) = 0;
       }
    }
 
 for(int i = 0; i < N_CH_OUT; i++){
-	if(i < (N_CH_OUT/2)) link_out[i] = link_out_pos[i];
-	else if(i >= N_CH_OUT/2) link_out[i] = link_out_neg[i];
+        link_out[i] = tmp_link_out[i];
 }
 
    if(first) first = false;
