@@ -5,7 +5,7 @@ using namespace std;
 
 #include "../../../../../APx_Gen0_Algo/VivadoHls/null_algo_unpacked/vivado_hls/src/algo_unpacked.h"   // This is where you should have had hls_algo - if not find the header file and fix this - please do not copy this file as that defines the interface
 #include "GCT.hh"
-
+#include "inputMapping.hh"
 
 /*
  * algo_unpacked interface exposes fully unpacked input and output link data.
@@ -28,7 +28,18 @@ void algo_unpacked(ap_uint<192> link_in[N_CH_IN], ap_uint<192> link_out[N_CH_OUT
 #pragma HLS PIPELINE II=3
 #pragma HLS INTERFACE ap_ctrl_hs port=return
 
+ap_uint<192> mapped_link_in[N_CH_IN];
+#pragma HLS ARRAY_PARTITION variable=mapped_link_in    complete dim=0
+for (int i = 0; i < N_CH_IN; i++){
+   mapped_link_in[i] = 0;
+}
+
+mappingInput(link_in, mapped_link_in);
+
+
+
 ap_uint<192> tmp_link_out[N_CH_OUT];
+#pragma HLS ARRAY_PARTITION variable=tmp_link_out    complete dim=0
 for (int i = 0; i < N_CH_OUT; i++){
 	tmp_link_out[i] = 0;
 }
@@ -39,7 +50,7 @@ for (int i = 0; i < N_CH_OUT; i++){
 
 #ifndef ALGO_PASSTHROUGH
 
-   static bool first = false; //true- to print info
+   static bool first = true; //true- to print info
 
    uint16_t peakEta_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
    uint16_t peakPhi_Pos   [NRCTRegionsPerEtaHalf][NClustersPerRCTRegion];
@@ -81,38 +92,38 @@ for (int i = 0; i < N_CH_OUT; i++){
 
 	 uint16_t bLo1 = (iCluster % NClustersPerPhi)*32 + 32;
 	 uint16_t bHi1 = bLo1 + 2;
-	 peakEta_Pos[iRCT][iCluster] = link_in[inlink].range(bHi1, bLo1);
-	 peakEta_Neg[iRCT][iCluster] = link_in[inlink + (N_CH_IN/2)].range(bHi1, bLo1);
-	 if(first) std::cout<<"peakEta_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi1<<", "<<bLo1<<"): "<<peakEta_Pos[iRCT][iCluster]<<std::endl;
-	 if(first) std::cout<<"peakEta_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi1<<", "<<bLo1<<"): "<<peakEta_Neg[iRCT][iCluster]<<std::endl;
+	 peakEta_Pos[iRCT][iCluster] = mapped_link_in[inlink].range(bHi1, bLo1);
+	 peakEta_Neg[iRCT][iCluster] = mapped_link_in[inlink + (N_CH_IN/2)].range(bHi1, bLo1);
+	 if(first) std::cout<<"peakEta_Pos["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink<<"].range("<<bHi1<<", "<<bLo1<<"): "<<peakEta_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"peakEta_Neg["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi1<<", "<<bLo1<<"): "<<peakEta_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo2 = bHi1 + 1; 
 	 uint16_t bHi2 = bLo2 + 2;
-	 peakPhi_Pos[iRCT][iCluster]  = link_in[inlink].range(bHi2, bLo2);
-	 peakPhi_Neg[iRCT][iCluster]  = link_in[inlink + (N_CH_IN/2)].range(bHi2, bLo2);
-	 if(first) std::cout<<"peakPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi2<<", "<<bLo2<<"): "<<peakPhi_Pos[iRCT][iCluster]<<std::endl;
-	 if(first) std::cout<<"peakPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi2<<", "<<bLo2<<"): "<<peakPhi_Neg[iRCT][iCluster]<<std::endl;
+	 peakPhi_Pos[iRCT][iCluster]  = mapped_link_in[inlink].range(bHi2, bLo2);
+	 peakPhi_Neg[iRCT][iCluster]  = mapped_link_in[inlink + (N_CH_IN/2)].range(bHi2, bLo2);
+	 if(first) std::cout<<"peakPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink<<"].range("<<bHi2<<", "<<bLo2<<"): "<<peakPhi_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"peakPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi2<<", "<<bLo2<<"): "<<peakPhi_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo3 = bHi2 + 1; 
 	 uint16_t bHi3 = bLo3 + 5;
-	 towerEta_Pos[iRCT][iCluster]  = link_in[inlink].range(bHi3, bLo3);
-	 towerEta_Neg[iRCT][iCluster]  = offsettEta + link_in[inlink + (N_CH_IN/2)].range(bHi3, bLo3);
-	 if(first) std::cout<<"towerEta_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi3<<", "<<bLo3<<"): "<<towerEta_Pos[iRCT][iCluster]<<std::endl;
-	 if(first) std::cout<<"towerEta_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi3<<", "<<bLo3<<"): "<<towerEta_Neg[iRCT][iCluster]<<std::endl;
+	 towerEta_Pos[iRCT][iCluster]  = mapped_link_in[inlink].range(bHi3, bLo3);
+	 towerEta_Neg[iRCT][iCluster]  = offsettEta + mapped_link_in[inlink + (N_CH_IN/2)].range(bHi3, bLo3);
+	 if(first) std::cout<<"towerEta_Pos["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink<<"].range("<<bHi3<<", "<<bLo3<<"): "<<towerEta_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"towerEta_Neg["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi3<<", "<<bLo3<<"): "<<towerEta_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo4 = bHi3 + 1; 
 	 uint16_t bHi4 = bLo4 + 3;
-	 towerPhi_Pos[iRCT][iCluster]  = iRCT*offsettPhi + link_in[inlink].range(bHi4, bLo4);
-	 towerPhi_Neg[iRCT][iCluster]  = iRCT*offsettPhi + link_in[inlink + (N_CH_IN/2)].range(bHi4, bLo4);
-	 if(first) std::cout<<"towerPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi4<<", "<<bLo4<<"): "<<towerPhi_Pos[iRCT][iCluster]<<std::endl;
-	 if(first) std::cout<<"towerPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi4<<", "<<bLo4<<"): "<<towerPhi_Neg[iRCT][iCluster]<<std::endl;
+	 towerPhi_Pos[iRCT][iCluster]  = iRCT*offsettPhi + mapped_link_in[inlink].range(bHi4, bLo4);
+	 towerPhi_Neg[iRCT][iCluster]  = iRCT*offsettPhi + mapped_link_in[inlink + (N_CH_IN/2)].range(bHi4, bLo4);
+	 if(first) std::cout<<"towerPhi_Pos["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink<<"].range("<<bHi4<<", "<<bLo4<<"): "<<towerPhi_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"towerPhi_Neg["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi4<<", "<<bLo4<<"): "<<towerPhi_Neg[iRCT][iCluster]<<std::endl;
 
 	 uint16_t bLo5 = bHi4 + 1; 
 	 uint16_t bHi5 = bLo5 + 15;
-	 ClusterET_Pos[iRCT][iCluster] = link_in[inlink].range(bHi5, bLo5);
-	 ClusterET_Neg[iRCT][iCluster] = link_in[inlink + (N_CH_IN/2)].range(bHi5, bLo5);
-	 if(first) std::cout<<"ClusterET_Pos["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink<<"].range("<<bHi5<<", "<<bLo5<<"): "<<ClusterET_Pos[iRCT][iCluster]<<std::endl;
-	 if(first) std::cout<<"ClusterET_Neg["<<iRCT<<"]["<<iCluster<<"] = link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi5<<", "<<bLo5<<"): "<<ClusterET_Neg[iRCT][iCluster]<<std::endl;
+	 ClusterET_Pos[iRCT][iCluster] = mapped_link_in[inlink].range(bHi5, bLo5);
+	 ClusterET_Neg[iRCT][iCluster] = mapped_link_in[inlink + (N_CH_IN/2)].range(bHi5, bLo5);
+	 if(first) std::cout<<"ClusterET_Pos["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink<<"].range("<<bHi5<<", "<<bLo5<<"): "<<ClusterET_Pos[iRCT][iCluster]<<std::endl;
+	 if(first) std::cout<<"ClusterET_Neg["<<iRCT<<"]["<<iCluster<<"] = mapped_link_in["<<inlink+(N_CH_IN/2)<<"].range("<<bHi5<<", "<<bLo5<<"): "<<ClusterET_Neg[iRCT][iCluster]<<std::endl;
       }
    }
 
