@@ -1,18 +1,20 @@
 GCT:
 
-Each GCT takes input from 6 unique RCT cards and 2 neighbouring cards in each phi.
+Each GCT takes input from 6 unique RCT cards and 2 neighbouring cards in each eta half.
 Thus there is total of (1+6+1)x2 RCT cards feeding to GCT.
 
-Each RCT region is sending 17x4 clusters.ster (30b)= 10b cluster Et, 10b tower Et, 3b cluster_eta, 3b cluster phi, 3b hOe, 1b Iso
-Cluster (30b)= 10b cluster Et, 10b tower Et, 3b cluster_eta, 3b cluster phi, 3b hOe, 1b Iso
+Each RCT region is sending 17x4 clusters: (32b)= 10b cluster Et, 10b tower Et, 3b cluster_eta, 3b cluster phi, 3b time, 3b hOe
+Cluster (32b)= 10b cluster Et, 10b tower Et, 3b cluster_eta, 3b cluster phi, 3b time, 3b hOe
 tower_eta (6b) and tower_phi (5b) are embedded in links coming from RCT
 
-Packing of output from RCT or input to GCT:
-- Each link has total 384b, divided into 6 words
-- Each word in a link can carry 2 clusters, i.e. 60b and 4 are left empty
+Packing of output from RCT or input to GCT at 25G:
+- Each link has total 576b, divided into 9 words
+- Each word in a link can carry 2 clusters, i.e. 32b
 
-- 2-links can carry 1-entire phi for 6-unique RCT regions
-- Link# 0-33: carry 17 phi slices (positive eta)
-- Link# 34-67: carry 17 phi slices (negative eta)
+-  Each link carry half eta slice i.e. 17 towers in eta for each phi
 
-- For neighbouring 
+- Link# 0  - 31: carry 17 phi slices (positive eta)
+- Link# 32 - 64: carry 17 phi slices (negative eta)
+
+
+Jet Algo
