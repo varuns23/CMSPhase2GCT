@@ -3,5 +3,5 @@ ip/
 *.jou
 *.log
 build/
-proj
+proj/
 *.swp
