@@ -1,14 +1,10 @@
 #CMS Phase2GCT
 
-set environment
 ```
-source /opt/Xilinx/Vivado/2019.1/settings64.sh #beck
-```
-
-checkout
-```
-git clone git@github.com:varuns23/CMSPhase2GCT.git
+git clone -b 2020-Gen2-bigWord git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
+
+source setEnv.sh
 ```
 
 ## Running:
@@ -16,16 +12,11 @@ cd CMSPhase2GCT
 Simulation
 ./run.sh
 
-Synthesis
+Synthesis and RTL export
 
 cd hls/vivado_hls/ 
-vivado_hls -f run_hls.tcl synth=1    
+vivado_hls -f run_hls.tcl synth=1 export=1 
 ```
-
-
-
-
-
 
 
 ## Making bit file:

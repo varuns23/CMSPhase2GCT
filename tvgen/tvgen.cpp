@@ -6,7 +6,7 @@ using namespace std;
 
 #define ETA 17 //()
 #define PHI 32 //(1+6+1)*4
-#define NLINKS 64
+#define NLINKS 32 // only one eta half
 
 class Tower {
   public:  
@@ -82,86 +82,78 @@ bool pack(Tower towers[17], ap_uint<64> out[9]) {
 
 int main(int argn, char *argp[]) {
 
-  Tower towersInPosEta[PHI][ETA];
-  Tower towersInNegEta[PHI][ETA];
+  Tower towersInPhi[PHI][ETA];
 
   for(int ieta = 0; ieta < ETA; ieta++){
     for(int iphi = 0; iphi < PHI; iphi++){
-      towersInPosEta[iphi][ieta].cluster_et =0;
-      towersInPosEta[iphi][ieta].tower_et     =0;
-      towersInPosEta[iphi][ieta].peak_phi     =7;
-      towersInPosEta[iphi][ieta].peak_eta     =7;
-      towersInPosEta[iphi][ieta].peak_time    =7;
-      towersInPosEta[iphi][ieta].hOe          =7;
+      towersInPhi[iphi][ieta].cluster_et   =0;
+      towersInPhi[iphi][ieta].tower_et     =0;
+      towersInPhi[iphi][ieta].peak_phi     =7;
+      towersInPhi[iphi][ieta].peak_eta     =7;
+      towersInPhi[iphi][ieta].peak_time    =7;
+      towersInPhi[iphi][ieta].hOe          =7;
 
-      towersInNegEta[iphi][ieta].cluster_et =0;
-      towersInNegEta[iphi][ieta].tower_et     =0;
-      towersInNegEta[iphi][ieta].peak_phi     =7;
-      towersInNegEta[iphi][ieta].peak_eta     =7;
-      towersInNegEta[iphi][ieta].peak_time    =7;
-      towersInNegEta[iphi][ieta].hOe          =7;
     }
   }
 
   //-- Manual inputs to generate test vectors
-  towersInPosEta[3][10].cluster_et = 23; //fdc06c17 -
-  towersInPosEta[3][10].tower_et     = 27;
-  towersInPosEta[3][10].peak_phi     = 4;
-  towersInPosEta[3][10].peak_eta     = 3;
+  towersInPhi[3][10].cluster_et   = 23; //fdc06c17 -
+  towersInPhi[3][10].tower_et     = 27;
+  towersInPhi[3][10].peak_phi     = 4;
+  towersInPhi[3][10].peak_eta     = 3;
 
-  towersInPosEta[4][10].cluster_et = 40; //fd80b428 -
-  towersInPosEta[4][10].tower_et     = 45;
-  towersInPosEta[4][10].peak_phi     = 0;
-  towersInPosEta[4][10].peak_eta     = 3;
+  towersInPhi[4][10].cluster_et   = 40; //fd80b428 -
+  towersInPhi[4][10].tower_et     = 45;
+  towersInPhi[4][10].peak_phi     = 0;
+  towersInPhi[4][10].peak_eta     = 3;
 
-  towersInPosEta[15][3].cluster_et = 37; //fd409c25 -
-  towersInPosEta[15][3].tower_et     = 39;
-  towersInPosEta[15][3].peak_phi     = 4;
-  towersInPosEta[15][3].peak_eta     = 2;
+  towersInPhi[15][3].cluster_et   = 37; //fd409c25 -
+  towersInPhi[15][3].tower_et     = 39;
+  towersInPhi[15][3].peak_phi     = 4;
+  towersInPhi[15][3].peak_eta     = 2;
 
-  towersInPosEta[16][3].cluster_et = 12; //fd00300c -
-  towersInPosEta[16][3].tower_et     = 12;
-  towersInPosEta[16][3].peak_phi     = 0;
-  towersInPosEta[16][3].peak_eta     = 2;
+  towersInPhi[16][3].cluster_et   = 12; //fd00300c -
+  towersInPhi[16][3].tower_et     = 12;
+  towersInPhi[16][3].peak_phi     = 0;
+  towersInPhi[16][3].peak_eta     = 2;
 
-  towersInPosEta[25][16].cluster_et = 52; //fe30e034 -
-  towersInPosEta[25][16].tower_et     = 56;
-  towersInPosEta[25][16].peak_phi     = 3;
-  towersInPosEta[25][16].peak_eta     = 4;
+  towersInPhi[25][16].cluster_et   = 52; //fe30e034 -
+  towersInPhi[25][16].tower_et     = 56;
+  towersInPhi[25][16].peak_phi     = 3;
+  towersInPhi[25][16].peak_eta     = 4;
 
-  towersInPosEta[11][16].cluster_et = 9; //fe102409 -
-  towersInPosEta[11][16].tower_et     = 9;
-  towersInPosEta[11][16].peak_phi     = 1;
-  towersInPosEta[11][16].peak_eta     = 4;
+  towersInPhi[11][16].cluster_et   = 9; //fe102409 -
+  towersInPhi[11][16].tower_et     = 9;
+  towersInPhi[11][16].peak_phi     = 1;
+  towersInPhi[11][16].peak_eta     = 4;
 
-  towersInNegEta[25][0].cluster_et = 21; //fc306015 -
-  towersInNegEta[25][0].tower_et     = 24;
-  towersInNegEta[25][0].peak_phi     = 3;
-  towersInNegEta[25][0].peak_eta     = 0;
+  towersInPhi[25][0].cluster_et    = 21; //fc306015 -
+  towersInPhi[25][0].tower_et      = 24;
+  towersInPhi[25][0].peak_phi      = 3;
+  towersInPhi[25][0].peak_eta      = 0;
 
-  towersInNegEta[11][0].cluster_et = 70; //fc113c46 -
-  towersInNegEta[11][0].tower_et     = 79;
-  towersInNegEta[11][0].peak_phi     = 1;
-  towersInNegEta[11][0].peak_eta     = 0;
+  towersInPhi[11][0].cluster_et   = 70; //fc113c46 -
+  towersInPhi[11][0].tower_et     = 79;
+  towersInPhi[11][0].peak_phi     = 1;
+  towersInPhi[11][0].peak_eta     = 0;
 
-  towersInNegEta[27][7].cluster_et = 66; //fd411c42 -
-  towersInNegEta[27][7].tower_et     = 71;
-  towersInNegEta[27][7].peak_phi     = 4;
-  towersInNegEta[27][7].peak_eta     = 2;
+  towersInPhi[27][7].cluster_et   = 66; //fd411c42 -
+  towersInPhi[27][7].tower_et     = 71;
+  towersInPhi[27][7].peak_phi     = 4;
+  towersInPhi[27][7].peak_eta     = 2;
 
-  towersInNegEta[28][7].cluster_et = 14; //fd00400e -
-  towersInNegEta[28][7].tower_et     = 16;
-  towersInNegEta[28][7].peak_phi     = 0;
-  towersInNegEta[28][7].peak_eta     = 2;
+  towersInPhi[28][7].cluster_et = 14; //fd00400e -
+  towersInPhi[28][7].tower_et     = 16;
+  towersInPhi[28][7].peak_phi     = 0;
+  towersInPhi[28][7].peak_eta     = 2;
 
 
 
   ap_uint<64> packed[NLINKS][9];
-  for(int ilink = 0; ilink<NLINKS/2; ilink++){
+  for(int ilink = 0; ilink<NLINKS; ilink++){
     int phi = ilink;
 
-    pack(towersInPosEta[phi], packed[ilink]); 
-    pack(towersInNegEta[phi], packed[ilink + NLINKS/2]); 
+    pack(towersInPhi[phi], packed[ilink]); 
   }
 
   APxLinkData link_in(NLINKS);

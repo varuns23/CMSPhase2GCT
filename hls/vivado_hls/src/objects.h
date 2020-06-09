@@ -42,18 +42,6 @@ class Tower{
     ap_uint<3>  peak_time() {return ((data >> 26) & 0x7);}
     ap_uint<3>  hOe()       {return ((data >> 29) & 0x7);}
 
-//--|    ap_uint<32> data() {
-//--|      return (
-//--|	  (uint32_t) this->cluster_et() | 
-//--|	  (uint32_t) (this->tower_et() << 10) |
-//--|	  (uint32_t) (this->peak_phi() << 20) |
-//--|	  (uint32_t) (this->peak_eta() << 23) |
-//--|	  (uint32_t) (this->peak_time() << 26) |
-//--|	  (uint32_t) (this->hOe()       << 29) |
-//--|	  );
-//--|    }
-
-
 #ifndef __SYNTHESIS__
     string toString() {
       return "Tower [" + 
@@ -65,7 +53,6 @@ class Tower{
 	to_string(this->tower_et()) + "] ";
     }
 #endif
-
 
     ap_uint<32> data;
 
