@@ -15,13 +15,14 @@ TowersInEta unpackInputLink(hls::stream<algo::axiword> &link) {
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
 #pragma HLS INLINE
 
-#ifndef __SYNTHESIS__
-  // Avoid simulation warnings
-  if (link.empty()) continue;
-#endif
-
   TowersInEta tEta_;
   ap_uint<576> bigWord;
+
+#ifndef __SYNTHESIS__
+  // Avoid simulation warnings
+  if (link.empty()) return tEta_ ;
+#endif
+
   bigWord = link.read().data;
 
   for(size_t tEta=0, start=0, end=31; tEta<17; tEta++, start +=32, end +=32){
@@ -103,7 +104,6 @@ void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<alg
   // Step 4: Pack the outputs
   for (size_t i = 0; i < N_OUTPUT_LINKS; i++) {
 #pragma LOOP UNROLL
-
     packOutput(stitchedInPhi[i], link_out[i]);
 
   }
