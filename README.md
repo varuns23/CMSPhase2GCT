@@ -21,7 +21,7 @@ vivado_hls -f run_hls.tcl synth=1 export=1
 
 ## Making bit file:
 ```
-1) ssh beck
+1) ssh beck/uwlogin
 2) git clone --recursive ssh://git@gitlab.cern.ch:7999/asvetek/phase2-rct.git
 3) source /opt/Xilinx/Vivado/2019.1/settings64.sh
 4) cd phase2-rct/
