@@ -49,6 +49,8 @@ TowersInEta unpackInputLink(hls::stream<algo::axiword> &link) {
   return tEta_;
 }
 
+
+
 //hls::stream<algo::axiword> packOutput(TowersInEta tEta_ )hls::stream<algo::axiword> packOutput(TowersInEta tEta_ ){
 bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
@@ -81,10 +83,12 @@ bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
   return true;
 }
 
+
 void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<algo::axiword> link_out[N_OUTPUT_LINKS]) {
 #pragma HLS INTERFACE axis port=link_in
 #pragma HLS INTERFACE axis port=link_out
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
+//#pragma HLS PIPELINE II=12 //k
 
 #pragma HLS ARRAY_PARTITION variable=link_in complete dim=0
 #pragma HLS ARRAY_PARTITION variable=link_out complete dim=0
@@ -162,7 +166,6 @@ void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<alg
   }
 #endif
 
-
   // Step 4: Pack the outputs
   for (size_t i = 0; i < N_OUTPUT_LINKS/2; i++) {
 #pragma LOOP UNROLL
@@ -174,5 +177,4 @@ void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<alg
     packOutput(stitchedNegEta[i], link_out[i + N_OUTPUT_LINKS/2] );
 
   }
-
 }
