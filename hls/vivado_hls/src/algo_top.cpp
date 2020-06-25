@@ -2,7 +2,7 @@
 #include "algo_top.h"
 #include <algorithm>
 #include <utility>
-
+#include <iostream>
 #include "objects.h"
 #include "stitchTowers.h"
 
@@ -24,11 +24,37 @@ TowersInEta unpackInputLink(hls::stream<algo::axiword> &link) {
 #endif
 
   bigWord = link.read().data;
+/*
+for(size_t tEta=0, start=0, end=31; tEta<17; tEta++, start +=32, end +=32)
 
-  for(size_t tEta=0, start=0, end=31; tEta<17; tEta++, start +=32, end +=32){
+  {
 #pragma LOOP UNROLL
     tEta_.towers[tEta] = Tower(bigWord(end, start));
   }
+
+*/
+
+    tEta_.towers[0] = Tower(bigWord(31, 0));
+    tEta_.towers[1] = Tower(bigWord(63, 32));
+    tEta_.towers[2] = Tower(bigWord(95, 64));
+    tEta_.towers[3] = Tower(bigWord(127, 96));
+    tEta_.towers[4] = Tower(bigWord(159,128));
+    tEta_.towers[5] = Tower(bigWord(191, 160));
+    tEta_.towers[6] = Tower(bigWord(223,192));
+    tEta_.towers[7] = Tower(bigWord(255, 224));
+    tEta_.towers[8] = Tower(bigWord(287, 256));
+    tEta_.towers[9] = Tower(bigWord(319, 288));
+    tEta_.towers[10] = Tower(bigWord(351, 320));
+    tEta_.towers[11] = Tower(bigWord(383, 352));
+    tEta_.towers[12] = Tower(bigWord(415, 384));
+    tEta_.towers[13] = Tower(bigWord(447, 416));
+    tEta_.towers[14] = Tower(bigWord(479, 448));
+    tEta_.towers[15] = Tower(bigWord(511, 480));
+    tEta_.towers[16] = Tower(bigWord(543, 512));
+    //tEta_.towers[17] = Tower(bigWord(575, 544));
+
+
+
   return tEta_;
 }
 
@@ -40,10 +66,35 @@ bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
 
   ap_uint<576> outBigWord;
 
-  for(size_t tEta=0, start=0, end=31; tEta<17; tEta++, start +=32, end +=32){
+
+/*
+   for(size_t tEta=0, start=0, end=31; tEta<17; tEta++, start +=32, end +=32)
+
+  {
 #pragma LOOP UNROLL
     outBigWord(end, start) = (ap_uint<32>) tEta_.towers[tEta].data;
   }
+*/
+
+    outBigWord(31, 0) = (ap_uint<32>) tEta_.towers[0].data;
+    outBigWord(63, 32) = (ap_uint<32>) tEta_.towers[1].data;
+    outBigWord(95, 64) = (ap_uint<32>) tEta_.towers[2].data;
+    outBigWord(127, 96) = (ap_uint<32>) tEta_.towers[3].data;
+    outBigWord(159,128) = (ap_uint<32>) tEta_.towers[4].data;
+    outBigWord(191, 160) = (ap_uint<32>) tEta_.towers[5].data;
+    outBigWord(223,192) = (ap_uint<32>) tEta_.towers[6].data;
+    outBigWord(255, 224) = (ap_uint<32>) tEta_.towers[7].data;
+    outBigWord(287, 256) = (ap_uint<32>) tEta_.towers[8].data;
+    outBigWord(319, 288) = (ap_uint<32>) tEta_.towers[9].data;
+    outBigWord(351, 320) = (ap_uint<32>) tEta_.towers[10].data;
+    outBigWord(383, 352) = (ap_uint<32>) tEta_.towers[11].data;
+    outBigWord(415, 384) = (ap_uint<32>) tEta_.towers[12].data;
+    outBigWord(447, 416) = (ap_uint<32>) tEta_.towers[13].data;
+    outBigWord(479, 448) = (ap_uint<32>) tEta_.towers[14].data;
+    outBigWord(511, 480) = (ap_uint<32>) tEta_.towers[15].data;
+    outBigWord(543, 512) = (ap_uint<32>) tEta_.towers[16].data;
+    //outBigWord(575, 544) = (ap_uint<32>) tEta_.towers[17].data;
+
 
   axiword r; r.last = 0; r.user = 0;
   r.data = outBigWord;
@@ -95,7 +146,8 @@ void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<alg
     for(int teta=0; teta<TOWERS_IN_ETA; teta++){
 
       if(stitchedInPhi[tphi].towers[teta].cluster_et() != 0 )
-	cout<<std::dec<<"Pos: [tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<stitchedInPhi[tphi].towers[teta].toString()<<"  "<<std::hex<<stitchedInPhi[tphi].towers[teta].data<<endl;
+	cout<<std::dec<<"Pos: [tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<stitchedInPhi[tphi].towers[teta].toString()<<"  "<<std::hex<<stitchedInPhi[tphi].towers[teta].data;
+	cout<<endl;
     }
   }
 #endif

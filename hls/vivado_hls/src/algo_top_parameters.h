@@ -12,7 +12,8 @@
 //#define ALGO_PASSTHROUGH
 
 // Number of data words per processing cycle/frame
-const int N_WORDS_PER_FRAME	= 9;
+//const int N_WORDS_PER_FRAME	= 9;
+const int N_WORDS_PER_FRAME	= 1; //for bigWord
 
 /** Algorithm specific parameters **/
 #define TOWERS_IN_ETA 17
