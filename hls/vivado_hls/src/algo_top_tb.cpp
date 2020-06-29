@@ -78,7 +78,7 @@ int main(int argc, char **argv) {
 	}
       }
 
-      if(high == 576){
+      if(high == 575){
 	for (size_t k = 0; k < N_INPUT_LINKS; k++) {
 	  link_in[k].write({inDataWord_576b[k], 0, 1});
 	}
@@ -95,11 +95,7 @@ int main(int argc, char **argv) {
     // Calculate how many times the algorithm will have to run
     loop_count = datafile_in.getCycles() / N_WORDS_PER_FRAME;
     if (datafile_in.getCycles() % N_WORDS_PER_FRAME) loop_count++;
-    cout<<" ++++ Cycles : "<<datafile_in.getCycles()<<endl;
-    cout<<" ++++ loop_count :"<< loop_count<<endl;
  }
-
-
 
   // Run the algorithm
   for (size_t i = 0; i < loop_count; i++) {
@@ -121,7 +117,7 @@ int main(int argc, char **argv) {
       axiword64 r;
       r.data = (uint64_t)outDataWord_576b[k].range(high, low);
       r.user = r576.user;
-      if (high == 383) {
+      if (high == 575) {
 	r.last = 1;
       }
       else {

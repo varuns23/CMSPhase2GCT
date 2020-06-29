@@ -54,7 +54,7 @@ bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
 }
 
 
-void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<algo::axiword> link_out[N_OUTPUT_LINKS]) {
+void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> link_out[N_OUTPUT_LINKS]) {
 #pragma HLS INTERFACE axis port=link_in
 #pragma HLS INTERFACE axis port=link_out
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
@@ -74,6 +74,15 @@ void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<alg
     towersInPhi[ilink] = unpackInputLink(link_in[ilink]);
   }
 
+#ifndef __SYNTHESIS__  
+  for(int tphi=0; tphi<TOWERS_IN_PHI; tphi++){
+    for(int teta=0; teta<TOWERS_IN_ETA; teta++){
+
+      if(towersInPhi[tphi].towers[teta].cluster_et() != 0 )
+	cout<<std::dec<<"[tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<towersInPhi[tphi].towers[teta].toString()<<endl;
+    }
+  }
+#endif
 
 
    // Step 2: Stitch accross phi boundaries
@@ -115,7 +124,8 @@ void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<alg
      for(int teta=0; teta<TOWERS_IN_ETA; teta++){
 
        if(stitchedInPhi[tphi].towers[teta].cluster_et() != 0 )
-	 cout<<std::dec<<"Pos: [tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<stitchedInPhi[tphi].towers[teta].toString()<<"  "<<std::hex<<stitchedInPhi[tphi].towers[teta].data<<endl;
+	 cout<<std::dec<<"Pos: [tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<stitchedInPhi[tphi].towers[teta].toString()<<endl;
+	 //cout<<std::dec<<"Pos: [tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<stitchedInPhi[tphi].towers[teta].toString()<<"  "<<std::hex<<stitchedInPhi[tphi].towers[teta].data<<endl;
 //       if(stitchedNegEta[tphi].towers[teta].cluster_et() != 0 )
 //	 cout<<std::dec<<"Neg: [tphi, teta] = ["<<tphi<<", "<<teta+TOWERS_IN_ETA<<"]: "<<stitchedNegEta[tphi].towers[teta].toString()<<"  "<<std::hex<<stitchedNegEta[tphi].towers[teta].data<<endl;
      }
