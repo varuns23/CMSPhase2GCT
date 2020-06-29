@@ -4,6 +4,7 @@ Checkout existing GCT code and APx Core Firmware connector from:
 ```
 git clone git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
+git checkout GCT-Gen2-576-Bit
 source setEnv.sh #(uwlogin/beck independent)
 ```
 
