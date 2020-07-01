@@ -1,4 +1,4 @@
-#APx Gen2 Phase2 GCT
+# APx Gen2 Phase2 GCT
 
 Checkout existing GCT code and APx Core Firmware connector from:
 ```
@@ -8,7 +8,7 @@ git checkout GCT-Gen2-576-Bit
 source setEnv.sh #(uwlogin/beck independent)
 ```
 
-## Simulation:
+## Simulation and Synthesis:
 
 For HLS simulation
 ```bash
@@ -20,12 +20,13 @@ Synthesis and exporting RTL
 ```bash
 cd $AP_FW_BASE_DIR/CMSPhase2GCT/hls/vivado_hls/
 vivado_hls -f run_hls.tcl synth=1 export=1
+
 ```
 Simulation, Synthesis, Verification and RTL generation in Vivado HLS:
 ```bash
 cd $AP_FW_BASE_DIR/CMSPhase2GCT/hls/vivado_hls/
 vivado_hls -f run_hls.tcl csim=1 synth=1 cosim=1 export=1 tv_in=$PWD/data/test_in.txt tv_out=$PWD/data/test_out.txt tv_ref=$PWD/data/test_out_ref.txt
-     ```
+```
 
 ## Making bit file:
 ```
