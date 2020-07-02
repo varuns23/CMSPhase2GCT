@@ -14,6 +14,7 @@ TowersInEta unpackInputLink(hls::stream<algo::axiword> &link) {
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
 #pragma HLS INTERFACE axis port=link
 #pragma HLS INLINE
+//#pragma HLS latency min=1
 
   TowersInEta tEta_;
   ap_uint<576> word_576b_;
@@ -51,6 +52,7 @@ bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS INTERFACE axis port=link
 #pragma HLS INLINE
+//#pragma HLS latency min=1
 
   ap_uint<576> word_576b_;
 
@@ -96,7 +98,7 @@ void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> 
 
   for (size_t ilink = 0; ilink < N_INPUT_LINKS; ilink++) {
 #pragma LOOP UNROLL
-    //#pragma HLS latency min=6 max=6
+    #pragma HLS latency min=1
     towersInPhi[ilink] = unpackInputLink(link_in[ilink]);
   }
 
@@ -110,6 +112,10 @@ void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> 
   }
 #endif
 
+  TowersInEta towersInPhi_buffered[TOWERS_IN_PHI];
+#pragma HLS ARRAY_PARTITION variable=towersInPhi_buffered  complete dim=0
+
+  buffering<TowersInEta, TOWERS_IN_PHI>(towersInPhi, towersInPhi_buffered); 
 
   // Step 2: Stitch accross phi boundaries
   TowersInEta stitchedInPhi[TOWERS_IN_PHI];
@@ -117,18 +123,18 @@ void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> 
 
   for(size_t tphi = 0; tphi < TOWERS_IN_PHI-4; tphi += 4){
 #pragma LOOP UNROLL
-    stitchedInPhi[tphi+1] = towersInPhi[tphi+1];
-    stitchedInPhi[tphi+2] = towersInPhi[tphi+2];
+    stitchedInPhi[tphi+1] = towersInPhi_buffered[tphi+1];
+    stitchedInPhi[tphi+2] = towersInPhi_buffered[tphi+2];
 
 #ifndef __SYNTHESIS__  
     cout<<"tphi = "<<tphi+3<<", "<<tphi+4<<":--"<<endl;
 #endif
-    stitchInEta(towersInPhi[tphi+3], towersInPhi[tphi+4], stitchedInPhi[tphi+3], stitchedInPhi[tphi+4]);
+    stitchInEta(towersInPhi_buffered[tphi+3], towersInPhi_buffered[tphi+4], stitchedInPhi[tphi+3], stitchedInPhi[tphi+4]);
   }
-  stitchedInPhi[0]               = towersInPhi[0];
-  stitchedInPhi[TOWERS_IN_PHI-1] = towersInPhi[TOWERS_IN_PHI-1];
-  stitchedInPhi[TOWERS_IN_PHI-2] = towersInPhi[TOWERS_IN_PHI-2];
-  stitchedInPhi[TOWERS_IN_PHI-3] = towersInPhi[TOWERS_IN_PHI-3];
+  stitchedInPhi[0]               = towersInPhi_buffered[0];
+  stitchedInPhi[TOWERS_IN_PHI-1] = towersInPhi_buffered[TOWERS_IN_PHI-1];
+  stitchedInPhi[TOWERS_IN_PHI-2] = towersInPhi_buffered[TOWERS_IN_PHI-2];
+  stitchedInPhi[TOWERS_IN_PHI-3] = towersInPhi_buffered[TOWERS_IN_PHI-3];
 
   //-|   // Step 3: stitch accross eta boundaries
   //-|   TowersInEta stitchedPosEta[TOWERS_IN_PHI];
@@ -158,9 +164,17 @@ void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> 
   }
 #endif
 
+
+  // Step 2: Stitch accross phi boundaries
+  TowersInEta stitchedInPhi_buffered[TOWERS_IN_PHI];
+#pragma HLS ARRAY_PARTITION variable=stitchedInPhi_buffered  complete dim=0
+
+  buffering<TowersInEta, TOWERS_IN_PHI>(stitchedInPhi, stitchedInPhi_buffered); 
+  
   // Step 4: Pack the outputs
   for (size_t i = 0; i < N_OUTPUT_LINKS; i++) {
 #pragma LOOP UNROLL
-    packOutput(stitchedInPhi[i], link_out[i]);
+#pragma HLS latency min=1
+    packOutput(stitchedInPhi_buffered[i], link_out[i]);
   }
 }

@@ -65,6 +65,22 @@ class TowersInEta{
     Tower towers[17];
 };
 
+template<typename T, int N>
+void buffering(T in_[N], T out_[N]) {
 
+  T tmp[N];
+#pragma HLS ARRAY_PARTITION variable=tmp complete
+
+  for (int i = 0; i < N; ++i) {
+#pragma HLS latency min=1
+#pragma HLS LOOP UNROLL
+    tmp[i] = in_[i];
+  }
+  for (int i = 0; i < N; ++i) {
+#pragma HLS latency min=1
+#pragma HLS LOOP UNROLL
+    out_[i] = tmp[i];
+  }
+}
 
 #endif /*!__OBJECTS_H__*/
