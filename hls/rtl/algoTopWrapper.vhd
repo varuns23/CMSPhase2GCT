@@ -210,7 +210,7 @@ begin
 
       axiStreamIn  => axiStreamInGCT_S1_0,
       axiStreamOut => axiStreamOutGCT_S1_0
-      );
+    );
 
   U_GCTAlgoWrapper_1 : entity work.GCTAlgoWrapper
     generic map(

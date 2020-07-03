@@ -402,9 +402,10 @@ begin
         if (algoRst = '1') then
           in_cyc(idx) <= 0;
         else
-          in_cyc(idx) <= in_cyc(idx) + 1;
-          if (in_cyc(idx) = 5) then
+          if (in_cyc(idx) = 8) then
             in_cyc(idx) <= 0;
+          else
+              in_cyc(idx) <= in_cyc(idx) + 1;
           end if;
         end if;
 
@@ -476,9 +477,10 @@ begin
           axiStreamOut(idx).tvalid <= '0';
         else
           axiStreamOut(idx).tvalid <= '1';
-          out_cyc(idx)             <= out_cyc(idx) + 1;
           if (out_cyc(idx) = 8) then
             out_cyc(idx) <= 0;
+          else
+             out_cyc(idx)             <= out_cyc(idx) + 1;
           end if;
         end if;
 
