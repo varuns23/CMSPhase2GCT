@@ -75,7 +75,7 @@ bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
   word_576b_(543, 512) = (ap_uint<32>) tEta_.towers[16].data;
   word_576b_(575, 544) = (ap_uint<32>) 0;
 
-  axiword r; r.last = 0; r.user = 0;
+  axiword r; r.last = 1; r.user = 0;
   r.data = word_576b_;
   olink.write(r);
 
