@@ -16,7 +16,9 @@ def DrawInputTV(tv):
 
     for ybin in range(neta): clusters.GetYaxis().SetBinLabel(ybin+1,str(ybin))
 
-    for xbin in range(nphi): clusters.GetXaxis().SetBinLabel(xbin+1,str(xbin))
+    for xbin in range(nphi):
+        if xbin%4 == 0: clusters.GetXaxis().SetBinLabel(xbin+1,str(xbin))
+        # else: clusters.GetXaxis().SetBinLabel(xbin+1,"")
         
 
     for tower in tv.towers:
