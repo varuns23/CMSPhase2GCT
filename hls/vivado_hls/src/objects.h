@@ -53,18 +53,4 @@ class Tower{
 
 };
 
-class TowersInEta{
-  public:
-    TowersInEta(){
-#pragma HLS ARRAY_PARTITION variable=towers complete dim=0
-      for (size_t eta = 0; eta < 17; eta++) {
-#pragma LOOP UNROLL
-	this->towers[eta] = Tower();
-      }
-    }
-    Tower towers[17];
-};
-
-
-
 #endif /*!__OBJECTS_H__*/
