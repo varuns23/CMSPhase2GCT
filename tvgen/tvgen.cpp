@@ -17,7 +17,7 @@ using namespace std;
 #define SUM_ET 100 // Sum Et cut in RCT for writing MC Sim TV
 #define NEVENTS -1 // Number of Events to run over for MC Sim TV
 #define NTV 500 // Number of TV to generate
-#define EPATTERN 0 // Set to 1 to use sample_tv_in_{ievent}_{pos/neg}{irct}, 0 for sample_tv_in_{itv}
+#define EPATTERN 1 // Set to 1 to use sample_tv_in_{ievent}_{pos/neg}{irct}, 0 for sample_tv_in_{itv}
 
 class Tower {
 public:  
@@ -50,6 +50,15 @@ public:
     this->peak_eta = (peak_eta);
     this->peak_time = (peak_time);
     this->hOe = (hOe);
+  }
+
+  inline void set(const Tower& rhs) {
+    cluster_et = rhs.cluster_et;
+    tower_et = rhs.tower_et;
+    peak_phi = rhs.peak_phi;
+    peak_eta = rhs.peak_eta;
+    peak_time = rhs.peak_time;
+    hOe = rhs.hOe;
   }
 
   ap_uint<10> cluster_et;
@@ -148,14 +157,9 @@ void mc_sim(vector<const char*> inputs,const char* output,const char* archive=0)
   for (int ievent = 0; reader.Next(); ievent++) {
     if (ievent >= NEVENTS && NEVENTS != -1) break;
     if (itv >= NTV && NTV != -1) break;
-    string fname = outname;
-    if (EPATTERN) fname += "_" + to_string(ievent);
-    else fname += "_" + to_string(itv);
-    
     Tower posEtaSect[ETA][72];
     Tower negEtaSect[ETA][72];
     
-    float max_et = 0;
     for (int itower = 0; itower < *nTower; itower++) {
       float t_et = tower_et[itower];
       if (t_et == 0) continue;
@@ -167,29 +171,33 @@ void mc_sim(vector<const char*> inputs,const char* output,const char* archive=0)
       int p_eta = peak_ieta[itower];
       int p_phi = peak_iphi[itower];
 
-      if (t_et > max_et) max_et = t_et;
-
       if ( t_eta < 0 )    negEtaSect[abs(t_eta)-1][t_phi-1].set(c_et,t_et,p_phi,p_eta);
       else if (t_eta > 0) posEtaSect[    t_eta -1][t_phi-1].set(c_et,t_et,p_phi,p_eta);
     }
-    if (max_et < MAX_ET) continue;
 
     for (int igct = 0; igct < 3; igct++) {
+      // printf("GCT: %i\n",igct);
       float max_et = 0;
       Tower towersInPosEta[PHI][ETA];
       Tower towersInNegEta[PHI][ETA];
       for (int ieta = 0; ieta < ETA; ieta++) {
 	for (int iphi = 0; iphi < PHI; iphi++) {
-	  int rphi = igct*28 + iphi;
-	  
-	  towersInPosEta[iphi][ieta] = posEtaSect[ieta][rphi];
+	  int rphi = (igct*25 + iphi - 4)%72;
+	  if (rphi < 0) rphi += 72;
+	  towersInPosEta[iphi][ieta].set(posEtaSect[ieta][rphi]);
 	  if ( towersInPosEta[iphi][ieta].tower_et > max_et ) max_et = towersInPosEta[iphi][ieta].tower_et;
 	  
-	  towersInNegEta[iphi][ieta] = negEtaSect[ieta][rphi];
+	  towersInNegEta[iphi][ieta].set(negEtaSect[ieta][rphi]);
 	  if ( towersInNegEta[iphi][ieta].tower_et > max_et ) max_et = towersInNegEta[iphi][ieta].tower_et;
+
+	  // printf("(%i,%i,%i): pos %f neg %f\n",ieta,iphi,rphi,towersInPosEta[iphi][ieta].tower_et,towersInNegEta[iphi][ieta].tower_et);
 	}
       }
       if (max_et < MAX_ET) continue;
+      
+      string fname = outname;
+      if (EPATTERN) fname += "_" + to_string(ievent)+"_gct" + to_string(igct);
+      else fname += "_" + to_string(itv);
       write_tv(towersInPosEta,towersInNegEta,(fname+".txt").c_str());
       itv++;
     }
