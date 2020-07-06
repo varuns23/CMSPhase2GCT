@@ -15,6 +15,7 @@ static const size_t stitchInPhi = 1;
 
 void stitchTowers(size_t stitchType, Tower inA, Tower inB, Tower &outA, Tower &outB) {
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
+#pragma HLS INLINE
   bool stitch = false;
   if (stitchType == stitchInEta) {
     stitch = (inA.peak_eta() == inB.peak_eta() && 
