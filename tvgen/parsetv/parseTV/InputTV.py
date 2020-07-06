@@ -1,5 +1,5 @@
-T_ETA = 17
-T_PHI = 64
+T_ETA = 34
+T_PHI = 32
 class Tower:
     def __init__(self,binary,eta=None,phi=None):
         self.cluster_et = int( binary[22:32],2 )
@@ -31,6 +31,9 @@ class Link:
             itower = 17*ilink + i
             eta = itower%17
             phi = itower/17
+            if not phi < 32:
+                eta *= -1
+                phi = phi%32
             tower = Tower(binary[hi:lo],eta,phi)
             self.towers.append(tower)
     def unwrap(self): return self.towers

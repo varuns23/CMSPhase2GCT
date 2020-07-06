@@ -11,10 +11,12 @@ def DrawInputTV(tv):
     hsname = "vis_%s"%(tv.fname.replace(".txt","").replace("../","").replace("/","_"))
     neta = parse.T_ETA
     nphi = parse.T_PHI
-    clusters = TH2I(hsname+"_clusters","%s;iPhi;iEta"%hsname,nphi,0,nphi,neta,0,neta)
+    clusters = TH2I(hsname+"_clusters","%s;iPhi;iEta"%hsname,nphi,0,nphi,neta,-neta/2,neta/2)
     # towers = TH2I(hsname+"_towers","%s;iPhi;iEta"%hsname,tphi,0,nphi,teta,0,neta)
 
-    for ybin in range(neta): clusters.GetYaxis().SetBinLabel(ybin+1,str(ybin))
+    for ybin in range(neta):
+        if ybin < 17: clusters.GetYaxis().SetBinLabel(ybin+1,str(ybin-17))
+        else: clusters.GetYaxis().SetBinLabel(ybin+1,str(ybin-16))
 
     for xbin in range(nphi):
         if xbin%4 == 0: clusters.GetXaxis().SetBinLabel(xbin+1,str(xbin))
@@ -33,13 +35,12 @@ def DrawInputTV(tv):
     # towers.Draw("BOX TEXT same")
     # towers.SetLineColor(kRed)
     lines = []
-    # for y in range(1,parse.T_ETA):
-    #     line = TLine(0,y,nphi,y)
-    #     line.SetLineWidth(2)
-    #     line.Draw()
-    #     lines.append(line)
+    line = TLine(0,0,nphi,0)
+    line.SetLineWidth(2)
+    line.Draw()
+    lines.append(line)
     for x in range(1,parse.T_PHI/4):
-        line = TLine(4*x,0,4*x,neta)
+        line = TLine(4*x,-neta/2,4*x,neta/2)
         line.SetLineWidth(2)
         line.Draw()
         lines.append(line)
