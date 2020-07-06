@@ -11,7 +11,7 @@
 using namespace std;
 
 bool mergeNeighbors(bool stitch, ap_uint<10> Ai_et, ap_uint<10> Bi_et, ap_uint<10> &Ao_et, ap_uint<10> &Bo_et){
-#pragma HLS PIPELINE
+#pragma HLS PIPELINE II=9
 
   ap_uint<12> _etSum = Ai_et + Bi_et;
   ap_uint<10> _peggedEtSum = (_etSum > 0x3FF) ? (ap_uint<10>)0x3FF : (ap_uint<10>) _etSum;
@@ -38,7 +38,7 @@ bool mergeNeighbors(bool stitch, ap_uint<10> Ai_et, ap_uint<10> Bi_et, ap_uint<1
 }
 
 bool stitchInEta(TowersInEta inA, TowersInEta inB, TowersInEta &outA, TowersInEta &outB){
-#pragma HLS PIPELINE 
+#pragma HLS PIPELINE II=9
 
   for(size_t teta=0; teta < TOWERS_IN_ETA; teta++){
 #pragma LOOP UNROLL
@@ -74,7 +74,7 @@ bool stitchInEta(TowersInEta inA, TowersInEta inB, TowersInEta &outA, TowersInEt
 };
 
 bool stitchInPhi(TowersInEta inA, TowersInEta inB, TowersInEta &outA, TowersInEta &outB){
-#pragma HLS PIPELINE 
+#pragma HLS PIPELINE II=9
 
   for(size_t teta=0; teta < TOWERS_IN_ETA-1; teta++){
 #pragma LOOP UNROLL
