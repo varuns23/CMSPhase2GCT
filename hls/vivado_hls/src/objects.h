@@ -5,12 +5,6 @@
 
 using namespace std;
 
-//- const ap_uint<5> NtowerEta= 17;  //# towers per phi per RCT
-//- const ap_uint<3> NtowerPhi= 4;   //# towers per eta per RCT
-//- const ap_uint<7> NGCTEta = 17*2; //# towers per phi per GCT
-//- const ap_uint<6> NGCTPhi = 4*8;  //# towers per eta per GCT (1+6+1)x2
-
-
 /*ECAL tower object definition*/
 class Tower{
   public:
@@ -42,18 +36,6 @@ class Tower{
     ap_uint<3>  peak_time() {return ((data >> 26) & 0x7);}
     ap_uint<3>  hOe()       {return ((data >> 29) & 0x7);}
 
-//--|    ap_uint<32> data() {
-//--|      return (
-//--|	  (uint32_t) this->cluster_et() | 
-//--|	  (uint32_t) (this->tower_et() << 10) |
-//--|	  (uint32_t) (this->peak_phi() << 20) |
-//--|	  (uint32_t) (this->peak_eta() << 23) |
-//--|	  (uint32_t) (this->peak_time() << 26) |
-//--|	  (uint32_t) (this->hOe()       << 29) |
-//--|	  );
-//--|    }
-
-
 #ifndef __SYNTHESIS__
     string toString() {
       return "Tower [" + 
@@ -70,19 +52,5 @@ class Tower{
     ap_uint<32> data;
 
 };
-
-class TowersInEta{
-  public:
-    TowersInEta(){
-#pragma HLS ARRAY_PARTITION variable=towers complete dim=0
-      for (size_t eta = 0; eta < 17; eta++) {
-#pragma LOOP UNROLL
-	this->towers[eta] = Tower();
-      }
-    }
-    Tower towers[17];
-};
-
-
 
 #endif /*!__OBJECTS_H__*/

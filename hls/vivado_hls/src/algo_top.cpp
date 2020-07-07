@@ -10,171 +10,119 @@ using namespace std;
 using namespace algo;
 
 
-TowersInEta unpackInputLink(hls::stream<algo::axiword> &link) {
-  //#pragma HLS PIPELINE II=N_WORDS_PER_FRAME   
+void unpackInputLink(hls::stream<algo::axiword> &link, Tower towersInEta[TOWERS_IN_ETA]) {
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
 #pragma HLS INTERFACE axis port=link
+#pragma HLS ARRAY_PARTITION variable=towersInEta complete dim=0
 #pragma HLS INLINE
 
-  TowersInEta tEta_;
-  ap_uint<64> word[N_WORDS_PER_FRAME];
-#pragma HLS ARRAY_PARTITION variable=word complete dim=1
+  ap_uint<576> word_576b_;
 
-  for (size_t i = 0; i < N_WORDS_PER_FRAME; i++) {
 #ifndef __SYNTHESIS__
-    // Avoid simulation warnings
-    if (link.empty()) continue;
+  // Avoid simulation warnings
+  if (link.empty()) return tEta_ ;
 #endif
-    word[i] = link.read().data;
-  }
 
-  tEta_.towers[0] = Tower(word[0](31,  0));
-  tEta_.towers[1] = Tower(word[0](63, 32));
-  tEta_.towers[2] = Tower(word[1](31,  0));
-  tEta_.towers[3] = Tower(word[1](63, 32));
-  tEta_.towers[4] = Tower(word[2](31,  0));
-  tEta_.towers[5] = Tower(word[2](63, 32));
-  tEta_.towers[6] = Tower(word[3](31,  0));
-  tEta_.towers[7] = Tower(word[3](63, 32));
-  tEta_.towers[8] = Tower(word[4](31,  0));
-  tEta_.towers[9] = Tower(word[4](63, 32));
-  tEta_.towers[10] = Tower(word[5](31,  0));
-  tEta_.towers[11] = Tower(word[5](63, 32));
-  tEta_.towers[12] = Tower(word[6](31,  0));
-  tEta_.towers[13] = Tower(word[6](63, 32));
-  tEta_.towers[14] = Tower(word[7](31,  0));
-  tEta_.towers[15] = Tower(word[7](63, 32));
-  tEta_.towers[16] = Tower(word[8](31,  0));
+  word_576b_ = link.read().data;
 
-  return tEta_;
+  towersInEta[0] = Tower(word_576b_( 31,   0));
+  towersInEta[1] = Tower(word_576b_( 63,  32));
+  towersInEta[2] = Tower(word_576b_( 95,  64));
+  towersInEta[3] = Tower(word_576b_(127,  96));
+  towersInEta[4] = Tower(word_576b_(159, 128));
+  towersInEta[5] = Tower(word_576b_(191, 160));
+  towersInEta[6] = Tower(word_576b_(223, 192));
+  towersInEta[7] = Tower(word_576b_(255, 224));
+  towersInEta[8] = Tower(word_576b_(287, 256));
+  towersInEta[9] = Tower(word_576b_(319, 288));
+  towersInEta[10] = Tower(word_576b_(351, 320));
+  towersInEta[11] = Tower(word_576b_(383, 352));
+  towersInEta[12] = Tower(word_576b_(415, 384));
+  towersInEta[13] = Tower(word_576b_(447, 416));
+  towersInEta[14] = Tower(word_576b_(479, 448));
+  towersInEta[15] = Tower(word_576b_(511, 480));
+  towersInEta[16] = Tower(word_576b_(543, 512));
+
+  return;
+
 }
 
-
-
-//hls::stream<algo::axiword> packOutput(TowersInEta tEta_ )hls::stream<algo::axiword> packOutput(TowersInEta tEta_ ){
-bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
+bool packOutput(Tower towersInEta[TOWERS_IN_ETA], hls::stream<algo::axiword> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS INTERFACE axis port=link
 #pragma HLS INLINE
 
-//  hls::stream<algo::axiword> olink;
-  
-  ap_uint<64> outWord[N_OUTPUT_WORDS_PER_FRAME];
-#pragma HLS ARRAY_PARTITION variable=outWord complete dim=1
+  ap_uint<576> word_576b_;
 
-  outWord[0] = (((ap_uint<64>) tEta_.towers[1].data) << 32) | (ap_uint<64>) tEta_.towers[0].data; 
-  outWord[1] = (((ap_uint<64>) tEta_.towers[3].data) << 32) | (ap_uint<64>) tEta_.towers[2].data; 
-  outWord[2] = (((ap_uint<64>) tEta_.towers[5].data) << 32) | (ap_uint<64>) tEta_.towers[4].data; 
-  outWord[3] = (((ap_uint<64>) tEta_.towers[7].data) << 32) | (ap_uint<64>) tEta_.towers[6].data; 
-  outWord[4] = (((ap_uint<64>) tEta_.towers[9].data) << 32) | (ap_uint<64>) tEta_.towers[8].data; 
-  outWord[5] = (((ap_uint<64>) tEta_.towers[11].data) << 32) | (ap_uint<64>) tEta_.towers[10].data; 
-  outWord[6] = (((ap_uint<64>) tEta_.towers[13].data) << 32) | (ap_uint<64>) tEta_.towers[12].data; 
-  outWord[7] = (((ap_uint<64>) tEta_.towers[15].data) << 32) | (ap_uint<64>) tEta_.towers[14].data; 
-  outWord[8] = (ap_uint<64>) tEta_.towers[16].data; 
+  word_576b_( 31,   0) = (ap_uint<32>) towersInEta[0].data;
+  word_576b_( 63,  32) = (ap_uint<32>) towersInEta[1].data;
+  word_576b_( 95,  64) = (ap_uint<32>) towersInEta[2].data;
+  word_576b_(127,  96) = (ap_uint<32>) towersInEta[3].data;
+  word_576b_(159, 128) = (ap_uint<32>) towersInEta[4].data;
+  word_576b_(191, 160) = (ap_uint<32>) towersInEta[5].data;
+  word_576b_(223, 192) = (ap_uint<32>) towersInEta[6].data;
+  word_576b_(255, 224) = (ap_uint<32>) towersInEta[7].data;
+  word_576b_(287, 256) = (ap_uint<32>) towersInEta[8].data;
+  word_576b_(319, 288) = (ap_uint<32>) towersInEta[9].data;
+  word_576b_(351, 320) = (ap_uint<32>) towersInEta[10].data;
+  word_576b_(383, 352) = (ap_uint<32>) towersInEta[11].data;
+  word_576b_(415, 384) = (ap_uint<32>) towersInEta[12].data;
+  word_576b_(447, 416) = (ap_uint<32>) towersInEta[13].data;
+  word_576b_(479, 448) = (ap_uint<32>) towersInEta[14].data;
+  word_576b_(511, 480) = (ap_uint<32>) towersInEta[15].data;
+  word_576b_(543, 512) = (ap_uint<32>) towersInEta[16].data;
+  word_576b_(575, 544) = (ap_uint<32>) 0;
 
-    for(size_t o=0; o<N_OUTPUT_WORDS_PER_FRAME; ++o){
-#pragma LOOP UNROLL
-      axiword r; r.last = 0; r.user = 0;
-      r.data = outWord[o];
-      olink.write(r);
-    }
+  axiword r; r.last = 0; r.user = 0;
+  r.data = word_576b_;
+  olink.write(r);
 
-  //return olink;
   return true;
 }
 
 
-void algo_top(hls::stream<algo::axiword> link_in[N_INPUT_LINKS], hls::stream<algo::axiword> link_out[N_OUTPUT_LINKS]) {
+void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> link_out[N_OUTPUT_LINKS]) {
 #pragma HLS INTERFACE axis port=link_in
 #pragma HLS INTERFACE axis port=link_out
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
-//#pragma HLS PIPELINE II=12 //k
 
 #pragma HLS ARRAY_PARTITION variable=link_in complete dim=0
 #pragma HLS ARRAY_PARTITION variable=link_out complete dim=0
 
-
-  // Step 1: Unpack links
-  TowersInEta towersInPhiPosEta[TOWERS_IN_PHI];
-  TowersInEta towersInPhiNegEta[TOWERS_IN_PHI];
-#pragma HLS ARRAY_PARTITION variable=towersInPhiPosEta  complete dim=0
-#pragma HLS ARRAY_PARTITION variable=towersInPhiNegEta  complete dim=0
-
-  for (size_t ilink = 0; ilink < N_INPUT_LINKS/2; ilink++) {
-#pragma LOOP UNROLL
-    //#pragma HLS latency min=6 max=6
-    towersInPhiPosEta[ilink] = unpackInputLink(link_in[ilink]);
-    towersInPhiNegEta[ilink] = unpackInputLink(link_in[ilink + (N_INPUT_LINKS/2)]);
+  // Unpack links
+  Tower towers[TOWERS_IN_PHI][TOWERS_IN_ETA];
+#pragma HLS ARRAY_PARTITION variable=towers complete dim=0
+  for (size_t tPhi = 0; tPhi < TOWERS_IN_PHI; tPhi++) {
+#pragma HLS LOOP UNROLL
+    unpackInputLink(link_in[tPhi], towers[tPhi]);
   }
 
-
-  // Step 2: Stitch accross phi boundaries
-  TowersInEta stitchedInPhiPosEta[TOWERS_IN_PHI];
-  TowersInEta stitchedInPhiNegEta[TOWERS_IN_PHI];
-#pragma HLS ARRAY_PARTITION variable=stitchedInPhiPosEta  complete dim=0
-#pragma HLS ARRAY_PARTITION variable=stitchedInPhiNegEta  complete dim=0
-
-  for(size_t tphi = 0; tphi < TOWERS_IN_PHI-4; tphi += 4){
-#pragma LOOP UNROLL
-    stitchedInPhiPosEta[tphi+1] = towersInPhiPosEta[tphi+1];
-    stitchedInPhiPosEta[tphi+2] = towersInPhiPosEta[tphi+2];
-
-    stitchedInPhiNegEta[tphi+1] = towersInPhiNegEta[tphi+1];
-    stitchedInPhiNegEta[tphi+2] = towersInPhiNegEta[tphi+2];
-
-#ifndef __SYNTHESIS__  
-    cout<<"tphi = "<<tphi+3<<", "<<tphi+4<<":--"<<endl;
-#endif
-    stitchInEta(towersInPhiPosEta[tphi+3], towersInPhiPosEta[tphi+4], stitchedInPhiPosEta[tphi+3], stitchedInPhiPosEta[tphi+4]);
-    stitchInEta(towersInPhiNegEta[tphi+3], towersInPhiNegEta[tphi+4], stitchedInPhiNegEta[tphi+3], stitchedInPhiNegEta[tphi+4]);
-  }
-  stitchedInPhiPosEta[0]               = towersInPhiPosEta[0];
-  stitchedInPhiPosEta[TOWERS_IN_PHI-1] = towersInPhiPosEta[TOWERS_IN_PHI-1];
-  stitchedInPhiPosEta[TOWERS_IN_PHI-2] = towersInPhiPosEta[TOWERS_IN_PHI-2];
-  stitchedInPhiPosEta[TOWERS_IN_PHI-3] = towersInPhiPosEta[TOWERS_IN_PHI-3];
-
-  stitchedInPhiNegEta[0]               = towersInPhiNegEta[0];
-  stitchedInPhiNegEta[TOWERS_IN_PHI-1] = towersInPhiNegEta[TOWERS_IN_PHI-1];
-  stitchedInPhiNegEta[TOWERS_IN_PHI-2] = towersInPhiNegEta[TOWERS_IN_PHI-2];
-  stitchedInPhiNegEta[TOWERS_IN_PHI-3] = towersInPhiNegEta[TOWERS_IN_PHI-3];
-
-
-  // Step 3: stitch accross eta boundaries
-  TowersInEta stitchedPosEta[TOWERS_IN_PHI];
-  TowersInEta stitchedNegEta[TOWERS_IN_PHI];
-#pragma HLS ARRAY_PARTITION variable=stitchedPosEta  complete dim=0
-#pragma HLS ARRAY_PARTITION variable=stitchedNegEta  complete dim=0
-
-  for(int tphi=0; tphi<TOWERS_IN_PHI; tphi++){
-#pragma LOOP UNROLL
-
-#ifndef __SYNTHESIS__  
-    cout<<"tphi = "<<tphi<<endl;;
-#endif
-    stitchInPhi(stitchedInPhiPosEta[tphi], stitchedInPhiNegEta[tphi],  stitchedPosEta[tphi],  stitchedNegEta[tphi]);
-  }
-
-#ifndef __SYNTHESIS__  
-  for(int tphi=0; tphi<TOWERS_IN_PHI; tphi++){
-    for(int teta=0; teta<TOWERS_IN_ETA; teta++){
-
-      if(stitchedPosEta[tphi].towers[teta].cluster_et() != 0 )
-	cout<<std::dec<<"Pos: [tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<stitchedPosEta[tphi].towers[teta].toString()<<"  "<<std::hex<<stitchedPosEta[tphi].towers[teta].data<<endl;
-     if(stitchedNegEta[tphi].towers[teta].cluster_et() != 0 )
-	cout<<std::dec<<"Neg: [tphi, teta] = ["<<tphi<<", "<<teta+TOWERS_IN_ETA<<"]: "<<stitchedNegEta[tphi].towers[teta].toString()<<"  "<<std::hex<<stitchedNegEta[tphi].towers[teta].data<<endl;
+  // Stitch Towers
+  Tower stitchedTowers[TOWERS_IN_PHI][TOWERS_IN_ETA];
+#pragma HLS ARRAY_PARTITION variable=stitchedTowers  complete dim=0
+  for (size_t tPhi = 0; tPhi < TOWERS_IN_PHI; tPhi++) {
+#pragma HLS LOOP UNROLL
+    for (size_t tEta = 0; tEta < TOWERS_IN_ETA; tEta++) {
+#pragma HLS LOOP UNROLL
+      stitchedTowers[tPhi][tEta] = towers[tPhi][tEta];
     }
   }
-#endif
-
-  // Step 4: Pack the outputs
-  for (size_t i = 0; i < N_OUTPUT_LINKS/2; i++) {
-#pragma LOOP UNROLL
-
-//    link_out[i]                    = packOutput(stitchedPosEta[i], );
-//    link_out[i + N_OUTPUT_LINKS/2] = packOutput(stitchedNegEta[i + N_OUTPUT_LINKS/2]);
-
-    packOutput(stitchedPosEta[i], link_out[i]);
-    packOutput(stitchedNegEta[i], link_out[i + N_OUTPUT_LINKS/2] );
-
+  for (size_t tEta = 0; tEta < TOWERS_IN_ETA; tEta++) {
+#pragma HLS LOOP UNROLL
+    stitchTowers(stitchInEta, towers[3][tEta], towers[4][tEta], stitchedTowers[3][tEta], stitchedTowers[4][tEta]);
+    stitchTowers(stitchInEta, towers[7][tEta], towers[8][tEta], stitchedTowers[7][tEta], stitchedTowers[8][tEta]);
+    stitchTowers(stitchInEta, towers[11][tEta], towers[12][tEta], stitchedTowers[11][tEta], stitchedTowers[12][tEta]);
+    stitchTowers(stitchInEta, towers[15][tEta], towers[16][tEta], stitchedTowers[15][tEta], stitchedTowers[16][tEta]);
+    stitchTowers(stitchInEta, towers[19][tEta], towers[20][tEta], stitchedTowers[19][tEta], stitchedTowers[20][tEta]);
+    stitchTowers(stitchInEta, towers[23][tEta], towers[24][tEta], stitchedTowers[23][tEta], stitchedTowers[24][tEta]);
+    stitchTowers(stitchInEta, towers[27][tEta], towers[28][tEta], stitchedTowers[27][tEta], stitchedTowers[28][tEta]);
   }
+
+  // Pack the outputs
+
+  for (size_t tPhi = 0; tPhi < TOWERS_IN_PHI; tPhi++) {
+#pragma HLS LOOP UNROLL
+    packOutput(stitchedTowers[tPhi], link_out[tPhi]);
+  }
+
 }
