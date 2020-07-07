@@ -14,10 +14,10 @@ using namespace std;
 #define NLINKS 64
 
 #define MAX_ET 100  // Maximum Et Crystal cut in RCT for writing MC Sim TV
-#define SUM_ET 100 // Sum Et cut in RCT for writing MC Sim TV
+#define SUM_ET 200 // Sum Et cut in RCT for writing MC Sim TV
 #define NEVENTS -1 // Number of Events to run over for MC Sim TV
 #define NTV 500 // Number of TV to generate
-#define EPATTERN 1 // Set to 1 to use sample_tv_in_{ievent}_{pos/neg}{irct}, 0 for sample_tv_in_{itv}
+#define EPATTERN 0 // Set to 1 to use sample_tv_in_{ievent}_{pos/neg}{irct}, 0 for sample_tv_in_{itv}
 
 class Tower {
 public:  
@@ -178,22 +178,32 @@ void mc_sim(vector<const char*> inputs,const char* output,const char* archive=0)
     for (int igct = 0; igct < 3; igct++) {
       // printf("GCT: %i\n",igct);
       float max_et = 0;
+      float sum_et = 0;
       Tower towersInPosEta[PHI][ETA];
       Tower towersInNegEta[PHI][ETA];
       for (int ieta = 0; ieta < ETA; ieta++) {
 	for (int iphi = 0; iphi < PHI; iphi++) {
-	  int rphi = (igct*25 + iphi - 4)%72;
+	  int rphi = (igct*24 + iphi - 4)%72;
 	  if (rphi < 0) rphi += 72;
 	  towersInPosEta[iphi][ieta].set(posEtaSect[ieta][rphi]);
-	  if ( towersInPosEta[iphi][ieta].tower_et > max_et ) max_et = towersInPosEta[iphi][ieta].tower_et;
-	  
-	  towersInNegEta[iphi][ieta].set(negEtaSect[ieta][rphi]);
-	  if ( towersInNegEta[iphi][ieta].tower_et > max_et ) max_et = towersInNegEta[iphi][ieta].tower_et;
 
+	  // Only check tower et for non-overlap regions
+	  if (4 <= iphi && iphi < 28) {
+	    if ( towersInPosEta[iphi][ieta].tower_et > max_et ) max_et = towersInPosEta[iphi][ieta].tower_et;
+	    sum_et += towersInPosEta[iphi][ieta].tower_et;
+	  }
+
+	  towersInNegEta[iphi][ieta].set(negEtaSect[ieta][rphi]);
+
+	  if (4 <= iphi && iphi < 28) {
+	    if ( towersInNegEta[iphi][ieta].tower_et > max_et ) max_et = towersInNegEta[iphi][ieta].tower_et;
+	    sum_et += towersInNegEta[iphi][ieta].tower_et;
+	  }
+	  
 	  // printf("(%i,%i,%i): pos %f neg %f\n",ieta,iphi,rphi,towersInPosEta[iphi][ieta].tower_et,towersInNegEta[iphi][ieta].tower_et);
 	}
       }
-      if (max_et < MAX_ET) continue;
+      if (max_et < MAX_ET || sum_et < SUM_ET) continue;
       
       string fname = outname;
       if (EPATTERN) fname += "_" + to_string(ievent)+"_gct" + to_string(igct);
