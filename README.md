@@ -7,7 +7,6 @@ Checkout existing GCT code and APx Core Firmware connector from:
 git clone --recursive ssh://git@gitlab.cern.ch:7999/asvetek/phase2-gct.git
 git clone git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
-git checkout GCT-Gen2-576-Bit-2DArray
 source setEnv.sh #(uwlogin/beck independent)
 ```
 
