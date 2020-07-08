@@ -20,7 +20,7 @@ void unpackInputLink(hls::stream<algo::axiword> &link, Tower towersInEta[TOWERS_
 
 #ifndef __SYNTHESIS__
   // Avoid simulation warnings
-  if (link.empty()) return tEta_ ;
+  if (link.empty()) return ;
 #endif
 
   word_576b_ = link.read().data;
