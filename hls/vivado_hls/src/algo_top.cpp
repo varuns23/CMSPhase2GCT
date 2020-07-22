@@ -15,6 +15,7 @@ void unpackInputLink(hls::stream<algo::axiword> &link, Tower towersInEta[TOWERS_
 #pragma HLS INTERFACE axis port=link
 #pragma HLS ARRAY_PARTITION variable=towersInEta complete dim=0
 #pragma HLS INLINE
+//#pragma HLS latency min=1
 
   ap_uint<576> word_576b_;
 
@@ -51,6 +52,7 @@ bool packOutput(Tower towersInEta[TOWERS_IN_ETA], hls::stream<algo::axiword> &ol
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS INTERFACE axis port=link
 #pragma HLS INLINE
+//#pragma HLS latency min=1
 
   ap_uint<576> word_576b_;
 
@@ -73,7 +75,7 @@ bool packOutput(Tower towersInEta[TOWERS_IN_ETA], hls::stream<algo::axiword> &ol
   word_576b_(543, 512) = (ap_uint<32>) towersInEta[16].data;
   word_576b_(575, 544) = (ap_uint<32>) 0;
 
-  axiword r; r.last = 0; r.user = 0;
+  axiword r; r.last = 1; r.user = 0;
   r.data = word_576b_;
   olink.write(r);
 
