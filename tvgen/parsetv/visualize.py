@@ -15,8 +15,8 @@ def DrawInputTV(tv):
     # towers = TH2I(hsname+"_towers","%s;iPhi;iEta"%hsname,tphi,0,nphi,teta,0,neta)
 
     for ybin in range(neta):
-        if ybin < 17: clusters.GetYaxis().SetBinLabel(ybin+1,str(ybin-17))
-        else: clusters.GetYaxis().SetBinLabel(ybin+1,str(ybin-16))
+        if ybin < 17: clusters.GetYaxis().SetBinLabel(ybin+1,str( -1*(ybin-17) ))
+        else: clusters.GetYaxis().SetBinLabel(ybin+1,str( -1*(ybin-16) ))
 
     for xbin in range(nphi):
         if xbin%4 == 0: clusters.GetXaxis().SetBinLabel(xbin+1,str(xbin))
@@ -28,7 +28,9 @@ def DrawInputTV(tv):
         tphi = tower.phi
         
         if tower.tower_et > 0:
-            clusters.Fill(tphi,teta,tower.tower_et)
+            if teta < 0: teta += 0.5
+            else:        teta -= 0.5
+            clusters.Fill(tphi,teta*-1,tower.tower_et)
     c = TCanvas(hsname,hsname,800,800)
     c.SetGrid()
     clusters.Draw("COLZ TEXT")

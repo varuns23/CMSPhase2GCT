@@ -29,7 +29,7 @@ class Link:
             lo = nbits - 32*i
             hi = nbits - 32*(i+1)
             itower = 17*ilink + i
-            eta = itower%17
+            eta = itower%17 + 1
             phi = itower/17
             if not phi < 32:
                 eta *= -1
