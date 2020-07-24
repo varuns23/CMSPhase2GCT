@@ -2,7 +2,7 @@
 
 export AP_FW_BASE_DIR=`dirname $PWD`
 
-beck=/opt/Xilinx/Vivado/2019.1/settings64.sh
+beck=/opt/Xilinx/Vivado/2020.1/settings64.sh
 uwlogin=/data/tools/Xilinx/Vivado/2019.1/settings64.sh
 
 if [ -f "$beck" ]; then

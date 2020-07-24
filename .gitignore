@@ -1,13 +1,9 @@
-ip/
 *.directive
 *.jou
 *.log
 build/
 proj/
 *.swp
-tvgen
 *.o
 *.root
-!tvgen/
-tvgen/rawdata/
 *.pyc
