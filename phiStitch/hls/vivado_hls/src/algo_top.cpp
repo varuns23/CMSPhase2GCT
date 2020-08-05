@@ -3,18 +3,16 @@
 #include <algorithm>
 #include <utility>
 
-#include "objects.h"
-#include "stitchTowers.h"
+#include "stitchPhi.h"
 
 using namespace std;
 using namespace algo;
 
 
-TowersInEta unpackInputLink(hls::stream<algo::axiword> &link) {
+TowersInEta unpackInputLink(hls::stream<algo::axiword576> &link) {
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
 #pragma HLS INTERFACE axis port=link
 #pragma HLS INLINE
-//#pragma HLS latency min=1
 
   TowersInEta tEta_;
   ap_uint<576> word_576b_;
@@ -47,12 +45,10 @@ TowersInEta unpackInputLink(hls::stream<algo::axiword> &link) {
   return tEta_;
 }
 
-//hls::stream<algo::axiword> packOutput(TowersInEta tEta_ ){
-bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
+bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword576> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS INTERFACE axis port=link
 #pragma HLS INLINE
-//#pragma HLS latency min=1
 
   ap_uint<576> word_576b_;
 
@@ -75,7 +71,7 @@ bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
   word_576b_(543, 512) = (ap_uint<32>) tEta_.towers[16].data;
   word_576b_(575, 544) = (ap_uint<32>) 0;
 
-  axiword r; r.last = 0; r.user = 0;
+  axiword576 r; r.last = 0; r.user = 0;
   r.data = word_576b_;
   olink.write(r);
 
@@ -83,7 +79,7 @@ bool packOutput(TowersInEta tEta_, hls::stream<algo::axiword> &olink){
 }
 
 
-void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> link_out[N_OUTPUT_LINKS]) {
+void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiword576> link_out[N_OUTPUT_LINKS]) {
 #pragma HLS INTERFACE axis port=link_in
 #pragma HLS INTERFACE axis port=link_out
 #pragma HLS PIPELINE II=N_WORDS_PER_FRAME
@@ -130,18 +126,8 @@ void algo_top(hls::stream<axiword> link_in[N_INPUT_LINKS], hls::stream<axiword> 
      stitchInPhi(towersInPosEta[tphi], towersInNegEta[tphi], stitchedTowersInPosEta[tphi], stitchedTowersInNegEta[tphi]);
   }
 
-//-| #ifndef __SYNTHESIS__  
-//-|   for(int tphi=0; tphi<TOWERS_IN_PHI; tphi++){
-//-|     for(int teta=0; teta<TOWERS_IN_ETA; teta++){
-//-| 
-//-|       if(stitchedInPhi[tphi].towers[teta].cluster_et() != 0 )
-//-| 	cout<<std::dec<<"[tphi, teta] = ["<<tphi<<", "<<teta<<"]: "<<stitchedInPhi[tphi].towers[teta].toString()<<endl;
-//-|     }
-//-|   }
-//-| #endif
 
-
-  // Step 4: Pack the outputs
+  // Step 3: Pack the outputs
   for (size_t olink = 0; olink < N_OUTPUT_LINKS/2; olink++) {
 #pragma LOOP UNROLL
 #pragma HLS latency min=1

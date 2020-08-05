@@ -19,8 +19,7 @@ using namespace std;
 using namespace algo;
 
 /* argp declarations */
-static char doc[] =
-    "APx HLS Algo C/RTL simulation";
+static char doc[] = "APx HLS Algo C/RTL simulation";
 
 static struct argp_option options[] = {
   {"read", 'r', "FILE", 0, "Reads target file and writes contexts to AXI streams", 0},
@@ -59,8 +58,8 @@ int main(int argc, char **argv) {
 
   argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-  hls::stream<axiword> link_in[N_INPUT_LINKS];
-  hls::stream<axiword> link_out[N_OUTPUT_LINKS];
+  hls::stream<axiword576> link_in[N_INPUT_LINKS];
+  hls::stream<axiword576> link_out[N_OUTPUT_LINKS];
   size_t loop_count = 1;
 
   if (arguments.readfile) {
@@ -103,9 +102,8 @@ int main(int argc, char **argv) {
   }
 
   APxLinkData datafile_out(N_OUTPUT_LINKS);
-  ap_uint<576> outDataWord_576b[N_INPUT_LINKS];
+  ap_uint<576> outDataWord_576b[N_OUTPUT_LINKS];
   axiword576 r576;
-
   for (size_t i = 0, low = 0, high = 63; i < loop_count * N_OUTPUT_WORDS_PER_FRAME; i++, low += 64, high += 64) {
     for (size_t k = 0; k < N_OUTPUT_LINKS; k++) {
       if((i % N_OUTPUT_WORDS_PER_FRAME) == 0){

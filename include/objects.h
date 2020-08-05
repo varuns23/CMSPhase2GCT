@@ -1,23 +1,27 @@
 #ifndef __OBJECTS_H__
 #define __OBJECTS_H__
 
-#include "algo_top_parameters.h"
+#include <stdint.h>
+#include <ap_int.h>
+#include <algorithm>
+#include <utility>
 
 using namespace std;
 
 /*ECAL tower object definition*/
 class Tower{
+
   public:
     Tower() : data(0) {;}
 
     Tower(ap_uint<10> cluster_et, ap_uint<10> tower_et, ap_uint<3> peak_phi, ap_uint<3> peak_eta, ap_uint<3> peak_time, ap_uint<3> hOe) {
 
       data = (cluster_et) | 
-	(((ap_uint<32>) tower_et) << 10) | 
-	(((ap_uint<32>) peak_phi) << 20) | 
-	(((ap_uint<32>) peak_eta) << 23) | 
+	(((ap_uint<32>) tower_et)  << 10) | 
+	(((ap_uint<32>) peak_phi)  << 20) | 
+	(((ap_uint<32>) peak_eta)  << 23) | 
 	(((ap_uint<32>) peak_time) << 26) | 
-	(((ap_uint<32>) hOe) << 29);
+	(((ap_uint<32>) hOe)       << 29);
     }
 
     Tower(uint32_t i) {data = i;}
@@ -26,7 +30,7 @@ class Tower{
       data = rhs.data;
       return *this;
     }
-    
+
     operator uint32_t() {return (uint32_t) data;}
 
     ap_uint<10> cluster_et(){return (data & 0x3FF);}
@@ -57,22 +61,13 @@ class TowersInEta{
   public:
     TowersInEta(){
 #pragma HLS ARRAY_PARTITION variable=towers complete dim=0
-      for (size_t eta = 0; eta < TOWERS_IN_ETA; eta++) {
+      for (size_t eta = 0; eta < 17; eta++) {
 #pragma LOOP UNROLL
 	this->towers[eta] = Tower();
       }
     }
 
-    Tower getTower(size_t i){
-      if(i < TOWERS_IN_ETA){
-	return this->towers[i];
-      }
-      else{
-	Tower tmp;
-	return tmp;
-      }
-    }
-    Tower towers[TOWERS_IN_ETA];
+    Tower towers[17];
 };
 
 template<typename T, int N>

@@ -2,42 +2,44 @@
 
 Checkout existing GCT code and APx Core Firmware connector from:
 ```
-git clone --recursive ssh://git@gitlab.cern.ch:7999/asvetek/phase2-gct.git
 git clone git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
 source setEnv.sh #(uwlogin/beck independent)
 ```
 ## Algorithms:
 ```
-algo = etaStitch  
-algo = phiStitch 
-algo = EgAlgo
-algo = JetAlgo
-algo = TauAlgo
+export algo = etaStitch  
+export algo = phiStitch 
+export algo = EgAlgo
+export algo = JetAlgo
+export algo = METAlgo
+export algo = TauAlgo
 ```
 
 ## Simulation and Synthesis:
 
 For HLS simulation
 ```bash
-cd $AP_FW_BASE_DIR/CMSPhase2GCT/<algo>/hls/vivado_hls/
+cd $AP_FW_BASE_DIR/CMSPhase2GCT/$algo/hls/vivado_hls/
 vivado_hls -f run_hls.tcl csim=1 tv_in=$PWD/data/test_in.txt tv_out=$PWD/data/test_out.txt tv_ref=$PWD/data/test_out_ref.txt
 ```
 
 Synthesis and exporting RTL
 ```bash
-cd $AP_FW_BASE_DIR/CMSPhase2GCT/<algo>/hls/vivado_hls/
+cd $AP_FW_BASE_DIR/CMSPhase2GCT/$algo/hls/vivado_hls/
 vivado_hls -f run_hls.tcl synth=1 export=1
 
 ```
 Simulation, Synthesis, Verification and RTL generation in Vivado HLS:
 ```bash
-cd $AP_FW_BASE_DIR/CMSPhase2GCT/<algo>/hls/vivado_hls/
+cd $AP_FW_BASE_DIR/CMSPhase2GCT/$algo/hls/vivado_hls/
 vivado_hls -f run_hls.tcl csim=1 synth=1 cosim=1 export=1 tv_in=$PWD/data/test_in.txt tv_out=$PWD/data/test_out.txt tv_ref=$PWD/data/test_out_ref.txt
 ```
 
 ## Making bit file for APd:
 ```
+cd $AP_FW_BASE_DIR
+git clone --recursive ssh://git@gitlab.cern.ch:7999/asvetek/phase2-gct.git
 cd $AP_FW_BASE_DIR/phase2-gct/
 mkdir build
 make
