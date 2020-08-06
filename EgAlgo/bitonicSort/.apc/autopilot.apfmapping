@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
+  <source>
+    <originFiles name="bitonicSort.cpp" path="/afs/cern.ch/user/p/piyush/work/bitonic32/bitonicSort.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="bitonicSort_tb.cpp" path="/afs/cern.ch/user/p/piyush/work/bitonic32/bitonicSort_tb.cpp"/>
+  </testbench>
+</autopilotfilemapping:AutoPilotFileMapping>

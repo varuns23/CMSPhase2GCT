@@ -1,0 +1,6 @@
+0.6
+2019.1
+May 24 2019
+14:51:52
+/afs/cern.ch/user/p/piyush/work/bitonic32/bitonicSort/solution1/sim/verilog/bitonicSort.autotb.v,1596272359,systemVerilog,,,,apatb_bitonicSort_top,/data/tools/Xilinx/Vivado/2019.1/data/xsim/ip/xsim_ip.ini,axi_protocol_checker_v1_1_12;axi_protocol_checker_v1_1_13;axis_protocol_checker_v1_1_11;axis_protocol_checker_v1_1_12;ieee_proposed=./ieee_proposed;smartconnect_v1_0;unisims_ver;xil_defaultlib;xpm,,,,,,
+/afs/cern.ch/user/p/piyush/work/bitonic32/bitonicSort/solution1/sim/verilog/bitonicSort.v,1596272260,systemVerilog,,,,bitonicSort,/data/tools/Xilinx/Vivado/2019.1/data/xsim/ip/xsim_ip.ini,axi_protocol_checker_v1_1_12;axi_protocol_checker_v1_1_13;axis_protocol_checker_v1_1_11;axis_protocol_checker_v1_1_12;ieee_proposed=./ieee_proposed;smartconnect_v1_0;unisims_ver;xil_defaultlib;xpm,,,,,,
