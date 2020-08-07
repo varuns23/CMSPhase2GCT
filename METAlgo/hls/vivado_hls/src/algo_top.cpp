@@ -89,26 +89,31 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 
   // Step 1: Unpack links
   // Input is 64 links carrying 32phix34eta towers
-  TowersInEta towersInPhi_NegEta[TOWERS_IN_PHI];
-  TowersInEta towersInPhi_PosEta[TOWERS_IN_PHI];
-#pragma HLS ARRAY_PARTITION variable=towersInPhi_NegEta complete dim=0
-#pragma HLS ARRAY_PARTITION variable=towersInPhi_PosEta complete dim=0
-
+  TowersInEta towersInPosEta[TOWERS_IN_PHI];
+  TowersInEta towersInNegEta[TOWERS_IN_PHI];
+#pragma HLS ARRAY_PARTITION variable=towersInPosEta complete dim=0
+#pragma HLS ARRAY_PARTITION variable=towersInNegEta complete dim=0
+     
   for (size_t ilink = 0; ilink < N_INPUT_LINKS/2; ilink++) {
 #pragma LOOP UNROLL
-    #pragma HLS latency min=1
-    towersInPhi_NegEta[ilink] = unpackInputLink(link_in[ilink]);
-    towersInPhi_PosEta[ilink+N_INPUT_LINKS/2] = unpackInputLink(link_in[ilink+N_INPUT_LINKS/2]);
+#pragma HLS latency min=1
+    size_t iPosEta = ilink;
+    size_t iNegEta = ilink + (N_INPUT_LINKS/2);
+    towersInPosEta[ilink] = unpackInputLink(link_in[iPosEta]);
+    towersInNegEta[ilink] = unpackInputLink(link_in[iNegEta]);
   }
 
 
-  // Step 2: MET Algo goes here
+  // Step 2: Jet Algo goes here
 
 
   // Step 3: Pack the outputs
-  for (size_t i = 0; i < N_OUTPUT_LINKS; i++) {
+  for (size_t olink = 0; olink < N_OUTPUT_LINKS/2; olink++) {
 #pragma LOOP UNROLL
 #pragma HLS latency min=1
-    packOutput(stitchedInPhi[i], link_out[i]);
+    size_t iPosEta = olink;              
+    size_t iNegEta = olink + (N_OUTPUT_LINKS/2);
+    packOutput(towersInPosEta[olink], link_out[iPosEta]);
+    packOutput(towersInNegEta[olink], link_out[iNegEta]);
   }
 }
