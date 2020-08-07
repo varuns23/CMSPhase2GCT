@@ -104,7 +104,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
   }
 
 
-  // Step 2: Jet Algo goes here
+  // Step 2: Sorting Algo goes here
 
 
   // Step 3: Pack the outputs
