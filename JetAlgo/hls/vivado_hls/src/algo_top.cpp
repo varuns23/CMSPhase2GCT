@@ -98,6 +98,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 
   // Step 2: Jet Algo goes here
   Region reg3x3[100];
+#pragma HLS ARRAY_PARTITION variable=reg3x3 complete dim=0
   size_t index=0;
   for(size_t ieta = 1; ieta<TOWERS_IN_ETA-1; ieta+=3){
 #pragma LOOP UNROLL
