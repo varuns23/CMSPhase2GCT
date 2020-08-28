@@ -16,7 +16,6 @@ ap_uint<14> get3x3Sum(Tower twrNW, Tower twrN, Tower twrNE, Tower twrW, Tower tw
   return sum;
 }
 
-
 class Jet{
   public:
     Jet() : data(0){;}
@@ -54,7 +53,7 @@ class Jet{
     }
 #endif
 
-    ap_uint<30> data;
+    ap_uint<29> data;
 };
 
 class Region{
@@ -69,21 +68,31 @@ class Region{
 	  (((ap_uint<38>)       eta) << 29) |
 	  (((ap_uint<38>)      time) << 35);
     }
-    
-    Region(ap_uint<38> i){ data = i;}
+   /* Region(ap_uint<10> seed_et, ap_uint<14> region_et, ap_uint<5> phi, ap_uint<6> eta, ap_uint<3> time, ap_uint<14> upper_et, ap_uint<14> lower_et){
+      data = (seed_et) |
+	  (((ap_uint<66>) region_et) << 10) |
+	  (((ap_uint<66>)       phi) << 24) |
+	  (((ap_uint<66>)       eta) << 29) |
+	  (((ap_uint<66>)      time) << 35) |
+	  (((ap_uint<66>)  upper_et) << 38) |
+	  (((ap_uint<66>)  lower_et) << 52);
+    }*/
+    Region(ap_uint<66> i){ data = i;}
 
     Region& operator=(const Region& rhs) {
       data = rhs.data;
       return *this;
     }
 
-    operator ap_uint<38>() {return (ap_uint<38>) data;}
+    operator ap_uint<66>() {return (ap_uint<66>) data;}
             
-    ap_uint<10> seed_et() {return ((data) & 0x3FF);}
+    ap_uint<10> seed_et()    {return ((data) & 0x3FF);}
     ap_uint<14> region_et()  {return ((data >> 10) & 0x3FFF);}
     ap_uint<5>  phi()        {return ((data >> 24) & 0x1F);}
     ap_uint<6>  eta()        {return ((data >> 29) & 0x3F);}
     ap_uint<3>  time()       {return ((data >> 35) & 0x7);}
+  //ap_uint<14> upper_et()   {return ((data >> 38) & 0x3FFF);}
+  //ap_uint<14> lower_et()   {return ((data >> 52) & 0x3FFF);}
 
 #ifndef __SYNTHESIS__
     string toString() {
@@ -93,11 +102,45 @@ class Region{
 	to_string(this->phi()) + ", " + 
 	to_string(this->eta()) + "), " + 
 	to_string(this->time()) + "] "; 
+      //to_string(this->upper_et());
+      //to_string(this->lower_et());
     }
 #endif
 
     ap_uint<38> data;
 
 };
+
+ap_uint<14> getUpperSum(Region regNW, Region regN, Region regNE, Region regW, Region regC, Region regE, Region regSW, Region regS, Region regSE){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+
+  ap_uint<14> sum =
+     regNW.region_et() + regN.region_et() + regNE.region_et() + 
+                                            regE.region_et();
+ 
+  return sum;
+}
+ap_uint<14> getLowerSum(Region regNW, Region regN, Region regNE, Region regW, Region regC, Region regE, Region regSW, Region regS, Region regSE){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+
+  ap_uint<14> sum =
+     regW.region_et()  + regC.region_et() + 
+     regSW.region_et() + regS.region_et() + regSE.region_et();
+ 
+  return sum;
+}
+ap_uint<14> get9x9Sum(Region regNW, Region regN, Region regNE, Region regW, Region regC, Region regE, Region regSW, Region regS, Region regSE){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+
+  ap_uint<14> sum = 
+    (regNW.region_et() + regN.region_et() + regNE.region_et() +
+     regW.region_et()  + regC.region_et() + regE.region_et()  +
+     regSW.region_et() + regS.region_et() + regSE.region_et());
+
+  return sum;  
+}
 
 #endif /* __JETOBJECTS_H__ */

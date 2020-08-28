@@ -2,7 +2,6 @@
 #include "algo_top.h"
 #include <algorithm>
 #include <utility>
-
 #include "../../../../include/objects.h"
 #include "JetObjects.h"
 using namespace std;
@@ -43,7 +42,7 @@ void unpackInputLink(hls::stream<algo::axiword576> &ilink, Tower towers[TOWERS_I
   return;
 }
 
-void packOutput(Region region[10], hls::stream<algo::axiword576> &olink){
+void packOutput(Region region[100], hls::stream<algo::axiword576> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS ARRAY_PARTITION variable=region complete dim=0
 #pragma HLS INTERFACE axis port=olink
@@ -68,7 +67,7 @@ void packOutput(Region region[10], hls::stream<algo::axiword576> &olink){
   
   olink.write(r);
 
-  return ;
+  return;
 }
 
 
@@ -97,13 +96,23 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 
 
   // Step 2: Jet Algo goes here
-  Region reg3x3[100];
-  size_t index=0;
-  for(size_t ieta = 1; ieta<TOWERS_IN_ETA-1; ieta+=3){
+  Region reg3x3[12][12];
+#pragma HLS ARRAY_PARTITION variable=reg3x3 complete dim=0
+  size_t pseueta=0;
+  size_t pseuphi=0;
+  for(pseueta = 0; pseueta<12; pseueta+=1){
 #pragma LOOP UNROLL
-    for(size_t iphi = 1; iphi<TOWERS_IN_PHI-1; iphi+=3){
+    for(pseuphi = 0; pseuphi<12; pseuphi+=1){
 #pragma LOOP UNROLL
-
+      if (pseueta == 0 || pseuphi == 0 || pseueta == 11 || pseuphi == 11){
+        reg3x3[pseuphi][pseueta] = Region(0,0,0,0,0);		    
+      }   
+    }
+  }
+  for(size_t ieta = 1, pseueta = 1; ieta<TOWERS_IN_ETA-1; ieta+=3, pseueta+=1){
+#pragma LOOP UNROLL
+    for(size_t iphi = 1, pseuphi = 1; iphi<TOWERS_IN_PHI-1; iphi+=3, pseuphi+=1){
+#pragma LOOP UNROLL
       ap_uint<10> seed_et = towers[iphi][ieta].tower_et();
       ap_uint<6> tphi = iphi;
       ap_uint<5> teta = ieta;
@@ -112,16 +121,41 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 	  towers[iphi-1][ieta+1], towers[iphi][ieta+1], towers[iphi+1][ieta+1],
 	  towers[iphi-1][ieta], towers[iphi][ieta], towers[iphi+1][ieta],
 	  towers[iphi-1][ieta-1], towers[iphi][ieta-1], towers[iphi+1][ieta-1]);
+      reg3x3[pseuphi][pseueta]= Region(seed_et, region_et, tphi, teta, time);	
+    }
+  }
+  
+  Region reg9x9[10][10];
+#pragma HLS ARRAY_PARTITION variable=reg9x9 complete dim=0
+  for(pseueta = 1; pseueta<11; pseueta+=1){
+#pragma LOOP UNROLL
+    for(pseuphi = 1; pseuphi<11; pseuphi+=1){
+#pragma LOOP UNROLL
+      ap_uint<10> seed_et = reg3x3[pseuphi][pseueta].seed_et();
+      ap_uint<6>  tphi = reg3x3[pseuphi][pseueta].phi();
+      ap_uint<5>  teta = reg3x3[pseuphi][pseueta].eta();
+      ap_uint<3>  time = reg3x3[pseuphi][pseueta].time();
+      ap_uint<14> region_et = get9x9Sum(
+          reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
+          reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
+	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
+    /*ap_uint<14> upper_et = get9x9Sum(
+          reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
+          reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
+	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
+      ap_uint<14> lower_et = get9x9Sum(
+          reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
+          reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
+	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);*/
 
-      reg3x3[index] = Region(seed_et, region_et, tphi, teta, time);
-
+      reg9x9[pseuphi-1][pseueta-1] = Region(seed_et, region_et, tphi, teta, time/*,upper_et, lower_et*/);	      
     }
   }
 
   // Step 3: Pack the outputs
   for(size_t olink=0; olink<10; olink++){
 #pragma LOOP UNROLL
-   packOutput(&reg3x3[olink*10], link_out[olink]); 
+   packOutput(&reg9x9[olink][olink], link_out[olink]); 
   }
 //-  for (size_t olink = 0; olink < N_OUTPUT_LINKS/2; olink++) {
 //-#pragma LOOP UNROLL
@@ -131,4 +165,5 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 //-    packOutput(&towers[olink][0], link_out[iNegEta]);
 //-    packOutput(&towers[olink][TOWERS_IN_ETA/2], link_out[iPosEta]);
 //-  }
+  return;
 }
