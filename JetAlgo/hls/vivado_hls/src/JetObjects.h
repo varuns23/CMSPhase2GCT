@@ -77,6 +77,7 @@ class Region{
 	  (((ap_uint<66>)  upper_et) << 38) |
 	  (((ap_uint<66>)  lower_et) << 52);
     }*/
+    //I add a constructor with lower_et and upper_et above
     Region(ap_uint<66> i){ data = i;}
 
     Region& operator=(const Region& rhs) {
@@ -91,8 +92,8 @@ class Region{
     ap_uint<5>  phi()        {return ((data >> 24) & 0x1F);}
     ap_uint<6>  eta()        {return ((data >> 29) & 0x3F);}
     ap_uint<3>  time()       {return ((data >> 35) & 0x7);}
-  //ap_uint<14> upper_et()   {return ((data >> 38) & 0x3FFF);}
-  //ap_uint<14> lower_et()   {return ((data >> 52) & 0x3FFF);}
+  //ap_uint<14> upper_et()   {return ((data >> 38) & 0x3FFF);}//not sure if 0x3FFF is right
+  //ap_uint<14> lower_et()   {return ((data >> 52) & 0x3FFF);}//not sure if 0x3FFF is right
 
 #ifndef __SYNTHESIS__
     string toString() {
@@ -107,7 +108,7 @@ class Region{
     }
 #endif
 
-    ap_uint<38> data;
+    ap_uint<38> data;//should I midified this to 66?
 
 };
 
