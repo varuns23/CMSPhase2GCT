@@ -42,7 +42,7 @@ void unpackInputLink(hls::stream<algo::axiword576> &ilink, Tower towers[TOWERS_I
   return;
 }
 
-void packOutput(Region region[100], hls::stream<algo::axiword576> &olink){
+void packOutput(Region region[10], hls::stream<algo::axiword576> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS ARRAY_PARTITION variable=region complete dim=0
 #pragma HLS INTERFACE axis port=olink
