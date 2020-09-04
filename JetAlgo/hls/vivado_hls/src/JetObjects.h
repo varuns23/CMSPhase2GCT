@@ -63,12 +63,12 @@ class Region{
 
     Region(ap_uint<10> seed_et, ap_uint<14> region_et, ap_uint<5> phi, ap_uint<6> eta, ap_uint<3> time){
       data = (seed_et) |
-	  (((ap_uint<38>) region_et) << 10) |
-	  (((ap_uint<38>)       phi) << 24) |
-	  (((ap_uint<38>)       eta) << 29) |
-	  (((ap_uint<38>)      time) << 35);
+	  (((ap_uint<66>) region_et) << 10) |
+	  (((ap_uint<66>)       phi) << 24) |
+	  (((ap_uint<66>)       eta) << 29) |
+	  (((ap_uint<66>)      time) << 35);
     }
-   /* Region(ap_uint<10> seed_et, ap_uint<14> region_et, ap_uint<5> phi, ap_uint<6> eta, ap_uint<3> time, ap_uint<14> upper_et, ap_uint<14> lower_et){
+    Region(ap_uint<10> seed_et, ap_uint<14> region_et, ap_uint<5> phi, ap_uint<6> eta, ap_uint<3> time, ap_uint<14> upper_et, ap_uint<14> lower_et){
       data = (seed_et) |
 	  (((ap_uint<66>) region_et) << 10) |
 	  (((ap_uint<66>)       phi) << 24) |
@@ -76,7 +76,7 @@ class Region{
 	  (((ap_uint<66>)      time) << 35) |
 	  (((ap_uint<66>)  upper_et) << 38) |
 	  (((ap_uint<66>)  lower_et) << 52);
-    }*/
+    }
     //I add a constructor with lower_et and upper_et above
     Region(ap_uint<66> i){ data = i;}
 
@@ -92,8 +92,8 @@ class Region{
     ap_uint<5>  phi()        {return ((data >> 24) & 0x1F);}
     ap_uint<6>  eta()        {return ((data >> 29) & 0x3F);}
     ap_uint<3>  time()       {return ((data >> 35) & 0x7);}
-  //ap_uint<14> upper_et()   {return ((data >> 38) & 0x3FFF);}//not sure if 0x3FFF is right
-  //ap_uint<14> lower_et()   {return ((data >> 52) & 0x3FFF);}//not sure if 0x3FFF is right
+    ap_uint<14> upper_et()   {return ((data >> 38) & 0x3FFF);}//not sure if 0x3FFF is right
+    ap_uint<14> lower_et()   {return ((data >> 52) & 0x3FFF);}//not sure if 0x3FFF is right
 
 #ifndef __SYNTHESIS__
     string toString() {
@@ -103,12 +103,12 @@ class Region{
 	to_string(this->phi()) + ", " + 
 	to_string(this->eta()) + "), " + 
 	to_string(this->time()) + "] "; 
-      //to_string(this->upper_et());
-      //to_string(this->lower_et());
+        to_string(this->upper_et());
+        to_string(this->lower_et());
     }
 #endif
 
-    ap_uint<38> data;//should I midified this to 66?
+    ap_uint<66> data;//should I midified this to 66?
 
 };
 

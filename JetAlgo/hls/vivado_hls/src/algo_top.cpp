@@ -139,16 +139,16 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
           reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
           reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
 	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
-    /*ap_uint<14> upper_et = get9x9Sum(
+      ap_uint<14> upper_et = get9x9Sum(
           reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
           reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
 	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
       ap_uint<14> lower_et = get9x9Sum(
           reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
           reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
-	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);*/
+	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
 
-      reg9x9[pseuphi-1][pseueta-1] = Region(seed_et, region_et, tphi, teta, time/*,upper_et, lower_et*/);	      
+      reg9x9[pseuphi-1][pseueta-1] = Region(seed_et, region_et, tphi, teta, time, upper_et, lower_et);	      
     }
   }
 
