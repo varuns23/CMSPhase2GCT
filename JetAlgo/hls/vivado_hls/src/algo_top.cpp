@@ -105,7 +105,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
     for(pseuphi = 0; pseuphi<12; pseuphi+=1){
 #pragma LOOP UNROLL
       if (pseueta == 0 || pseuphi == 0 || pseueta == 11 || pseuphi == 11){
-        reg3x3[pseuphi][pseueta] = Region(0,0,0,0,0);		    
+        reg3x3[pseuphi][pseueta] = Region(0,0,0,0,0);// create empty region around the 10 by 10 towers		    
       }   
     }
   }

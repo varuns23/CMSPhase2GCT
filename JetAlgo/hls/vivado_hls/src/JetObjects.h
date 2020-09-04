@@ -108,7 +108,7 @@ class Region{
     }
 #endif
 
-    ap_uint<66> data;//should I midified this to 66?
+    ap_uint<66> data;//Should I midified this to 66?
 
 };
 
