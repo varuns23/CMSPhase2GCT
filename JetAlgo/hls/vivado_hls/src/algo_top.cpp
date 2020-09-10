@@ -102,7 +102,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
   size_t index=0;
   for(size_t ieta = 1; ieta<TOWERS_IN_ETA-1; ieta+=3){
 #pragma LOOP UNROLL
-    for(size_t iphi = 1; iphi<TOWERS_IN_PHI-1; iphi+=3){
+    for(size_t iphi = 1; iphi<TOWERS_IN_PHI-1 && index < 100; iphi+=3, index+=1){
 #pragma LOOP UNROLL
 
       ap_uint<10> seed_et = towers[iphi][ieta].tower_et();
