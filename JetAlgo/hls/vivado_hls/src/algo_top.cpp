@@ -42,7 +42,7 @@ void unpackInputLink(hls::stream<algo::axiword576> &ilink, Tower towers[TOWERS_I
   return;
 }
 
-void packOutput(Region region[10], hls::stream<algo::axiword576> &olink){
+void packOutput(Region9x9 region[10], hls::stream<algo::axiword576> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS ARRAY_PARTITION variable=region complete dim=0
 #pragma HLS INTERFACE axis port=olink
@@ -96,7 +96,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 
 
   // Step 2: Jet Algo goes here
-  Region reg3x3[12][12];
+  Region3x3 reg3x3[12][12];
 #pragma HLS ARRAY_PARTITION variable=reg3x3 complete dim=0
   size_t pseueta=0;
   size_t pseuphi=0;
@@ -105,7 +105,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
     for(pseuphi = 0; pseuphi<12; pseuphi+=1){
 #pragma LOOP UNROLL
       if (pseueta == 0 || pseuphi == 0 || pseueta == 11 || pseuphi == 11){
-        reg3x3[pseuphi][pseueta] = Region(0,0,0,0,0);// create empty region around the 10 by 10 towers		    
+        reg3x3[pseuphi][pseueta] = Region3x3(0,0,0,0,0);// create empty region around the 10 by 10 towers		    
       }   
     }
   }
@@ -121,11 +121,11 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 	  towers[iphi-1][ieta+1], towers[iphi][ieta+1], towers[iphi+1][ieta+1],
 	  towers[iphi-1][ieta], towers[iphi][ieta], towers[iphi+1][ieta],
 	  towers[iphi-1][ieta-1], towers[iphi][ieta-1], towers[iphi+1][ieta-1]);
-      reg3x3[pseuphi][pseueta]= Region(seed_et, region_et, tphi, teta, time);	
+      reg3x3[pseuphi][pseueta]= Region3x3(seed_et, region_et, tphi, teta, time);	
     }
   }
   
-  Region reg9x9[10][10];
+  Region9x9 reg9x9[10][10];
 #pragma HLS ARRAY_PARTITION variable=reg9x9 complete dim=0
   for(pseueta = 1; pseueta<11; pseueta+=1){
 #pragma LOOP UNROLL
@@ -148,7 +148,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
           reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
 	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
 
-      reg9x9[pseuphi-1][pseueta-1] = Region(seed_et, region_et, tphi, teta, time, upper_et, lower_et);	      
+      reg9x9[pseuphi-1][pseueta-1] = Region9x9(seed_et, region_et, tphi, teta, time, upper_et, lower_et);	      
     }
   }
 
