@@ -50,17 +50,17 @@ void packOutput(Region9x9 region[10], hls::stream<algo::axiword576> &olink){
 
   ap_uint<576> word_576b_;
 
-  word_576b_( 37,   0) = (ap_uint<38>) region[0].data;
-  word_576b_( 75,  38) = (ap_uint<38>) region[1].data;
-  word_576b_(113,  76) = (ap_uint<38>) region[2].data;
-  word_576b_(151, 114) = (ap_uint<38>) region[3].data;
-  word_576b_(189, 152) = (ap_uint<38>) region[4].data;
-  word_576b_(227, 190) = (ap_uint<38>) region[5].data;
-  word_576b_(265, 228) = (ap_uint<38>) region[6].data;
-  word_576b_(303, 266) = (ap_uint<38>) region[7].data;
-  word_576b_(341, 304) = (ap_uint<38>) region[8].data;
-  word_576b_(379, 342) = (ap_uint<38>) region[9].data;
-  word_576b_(575, 380) = 0;
+  word_576b_( 55,   0) = (ap_uint<56>) region[0].data;
+  word_576b_(111,  56) = (ap_uint<56>) region[1].data;
+  word_576b_(167, 112) = (ap_uint<56>) region[2].data;
+  word_576b_(223, 168) = (ap_uint<56>) region[3].data;
+  word_576b_(279, 224) = (ap_uint<56>) region[4].data;
+  word_576b_(335, 280) = (ap_uint<56>) region[5].data;
+  word_576b_(391, 336) = (ap_uint<56>) region[6].data;
+  word_576b_(447, 392) = (ap_uint<56>) region[7].data;
+  word_576b_(503, 448) = (ap_uint<56>) region[8].data;
+  word_576b_(559, 504) = (ap_uint<56>) region[9].data;
+  word_576b_(575, 560) = 0;
 
   axiword576 r; r.last = 0; r.user = 0;
   r.data = word_576b_;
@@ -69,7 +69,6 @@ void packOutput(Region9x9 region[10], hls::stream<algo::axiword576> &olink){
 
   return;
 }
-
 
 void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiword576> link_out[N_OUTPUT_LINKS]) {
 #pragma HLS INTERFACE axis port=link_in
@@ -94,7 +93,6 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
     unpackInputLink(link_in[iPosEta], &towers[ilink][TOWERS_IN_ETA/2]);
   }
 
-
   // Step 2: Jet Algo goes here
   Region3x3 reg3x3[12][12];
 #pragma HLS ARRAY_PARTITION variable=reg3x3 complete dim=0
@@ -105,7 +103,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
     for(pseuphi = 0; pseuphi<12; pseuphi+=1){
 #pragma LOOP UNROLL
       if (pseueta == 0 || pseuphi == 0 || pseueta == 11 || pseuphi == 11){
-        reg3x3[pseuphi][pseueta] = Region3x3(0,0,0,0,0);// create empty region around the 10 by 10 towers		    
+         reg3x3[pseuphi][pseueta] = Region3x3(0,0,0,0,0);// create empty region around the 10 by 10 towers	    
       }   
     }
   }
@@ -124,7 +122,6 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       reg3x3[pseuphi][pseueta]= Region3x3(seed_et, region_et, tphi, teta, time);	
     }
   }
-  
   Region9x9 reg9x9[10][10];
 #pragma HLS ARRAY_PARTITION variable=reg9x9 complete dim=0
   for(pseueta = 1; pseueta<11; pseueta+=1){
@@ -151,11 +148,10 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       reg9x9[pseuphi-1][pseueta-1] = Region9x9(seed_et, region_et, tphi, teta, time, upper_et, lower_et);	      
     }
   }
-
   // Step 3: Pack the outputs
   for(size_t olink=0; olink<10; olink++){
 #pragma LOOP UNROLL
-   packOutput(&reg9x9[olink][olink], link_out[olink]); 
+    packOutput(&reg9x9[olink][olink], link_out[olink]); 
   }
 //-  for (size_t olink = 0; olink < N_OUTPUT_LINKS/2; olink++) {
 //-#pragma LOOP UNROLL
