@@ -21,7 +21,6 @@ class Jet{
     Jet() : data(0){;}
 
     Jet(ap_uint<16> et, ap_uint<5> phi, ap_uint<6> eta, ap_uint<3> time) {
-
       data = (et) | 
 	(((ap_uint<30>) phi)  << 16) | 
 	(((ap_uint<30>) eta)  << 21) | 
@@ -36,7 +35,6 @@ class Jet{
     }
 
     operator ap_uint<30>() {return (ap_uint<30>) data;}
-
 
     ap_uint<16> et()     {return ((data) & 0xFFFF);}
     ap_uint<5>  phi()    {return ((data >> 16) & 0x1F);}
