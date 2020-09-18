@@ -53,7 +53,7 @@ class Jet{
     }
 #endif
 
-    ap_uint<29> data;
+    ap_uint<30> data;
 };
 
 class Region3x3{
