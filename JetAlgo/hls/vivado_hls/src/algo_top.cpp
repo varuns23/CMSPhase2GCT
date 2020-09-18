@@ -94,7 +94,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
   }
 
   // Step 2: Jet Algo goes here
-  Region3x3 reg3x3[12][12];
+  Region3x3 reg3x3[12][12];//one extra tower on each side for reg9x9 algo
 #pragma HLS ARRAY_PARTITION variable=reg3x3 complete dim=0
   size_t pseueta=0;
   size_t pseuphi=0;
