@@ -125,8 +125,8 @@ class Region9x9{
     ap_uint<5>  phi()        {return ((data >> 24) & 0x1F);}
     ap_uint<6>  eta()        {return ((data >> 29) & 0x3F);}
     ap_uint<3>  time()       {return ((data >> 35) & 0x7);}
-    ap_uint<9> upper_et()   {return ((data >> 38) & 0x3FFF);}//not sure if 0x3FFF is right
-    ap_uint<9> lower_et()   {return ((data >> 49) & 0x3FFF);}//not sure if 0x3FFF is right
+    ap_uint<9> upper_et()   {return ((data >> 38) & 0x1FF);}//not sure if 0x3FFF is right
+    ap_uint<9> lower_et()   {return ((data >> 49) & 0x1FF);}//not sure if 0x3FFF is right
 
 #ifndef __SYNTHESIS__
     string toString() {

@@ -151,7 +151,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
   // Step 3: Pack the outputs
   for(size_t olink=0; olink<10; olink++){
 #pragma LOOP UNROLL
-    packOutput(&reg9x9[olink][olink], link_out[olink]); 
+    packOutput(reg9x9[olink], link_out[olink]); 
   }
 //-  for (size_t olink = 0; olink < N_OUTPUT_LINKS/2; olink++) {
 //-#pragma LOOP UNROLL
