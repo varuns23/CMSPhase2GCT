@@ -148,6 +148,22 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       reg9x9[pseuphi-1][pseueta-1] = Region9x9(seed_et, region_et, tphi, teta, time, upper_et, lower_et);	      
     }
   }
+  Jet jet[8][8];
+#pragma HLS ARRAY PARTITION variable=jet complete dim=0
+  for(pseueta = 1; pseueta<9; pseueta+=1){
+#pragma LOOP UNROLL
+    for(pseuphi = 1; pseuphi<9; pseuphi+=1){
+#pragma LOOP UNROLL
+      ap_uint<6> tphi = reg9x9[pseuphi][pseueta].phi();
+      ap_uint<6> teta = reg9x9[pseuphi][pseueta].eta();
+      ap_uint<3> time = reg9x9[pseuphi][pseueta].time();
+      ap_uint<14> et = isJet(
+          reg9x9[pseuphi-1][pseueta+1], reg9x9[pseuphi][pseueta+1], reg9x9[pseuphi+1][pseueta+1],
+          reg9x9[pseuphi-1][pseueta]  , reg9x9[pseuphi][pseueta]  , reg9x9[pseuphi+1][pseueta]  ,
+	  reg9x9[pseuphi-1][pseueta-1], reg9x9[pseuphi][pseueta-1], reg9x9[pseuphi+1][pseueta-1]);
+      jet[pseuphi-1][pseueta-1] = Jet(et, tphi, teta, time); 
+    }
+  } 
   // Step 3: Pack the outputs
   for(size_t olink=0; olink<10; olink++){
 #pragma LOOP UNROLL

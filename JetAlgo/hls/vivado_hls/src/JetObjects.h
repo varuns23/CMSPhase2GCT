@@ -16,6 +16,7 @@ ap_uint<14> get3x3Sum(Tower twrNW, Tower twrN, Tower twrNE, Tower twrW, Tower tw
   return sum;
 }
 
+
 class Jet{
   public:
     Jet() : data(0){;}
@@ -25,7 +26,7 @@ class Jet{
       data = (et) | 
 	(((ap_uint<30>) phi)  << 16) | 
 	(((ap_uint<30>) eta)  << 21) | 
-	(((ap_uint<32>) time) << 27); 
+	(((ap_uint<30>) time) << 27); 
     }
 
     Jet(ap_uint<30> i) {data = i;}
@@ -53,7 +54,7 @@ class Jet{
     }
 #endif
 
-    ap_uint<29> data;
+    ap_uint<30> data;
 };
 
 class Region3x3{
@@ -145,11 +146,11 @@ class Region9x9{
 
 };
 
-ap_uint<14> getUpperSum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3x3 regW, Region3x3 regC, Region3x3 regE, Region3x3 regSW, Region3x3 regS, Region3x3 regSE){
+ap_uint<9> getUpperSum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3x3 regW, Region3x3 regC, Region3x3 regE, Region3x3 regSW, Region3x3 regS, Region3x3 regSE){
 #pragma HLS PIPELINE II=9
 #pragma HLS INLINE
 
-  ap_uint<14> sum =
+  ap_uint<9> sum =
      regNW.region_et() + regN.region_et() + regNE.region_et() + 
                                             regE.region_et();
  
@@ -165,16 +166,30 @@ ap_uint<9> getLowerSum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3
  
   return sum;
 }
-ap_uint<9> get9x9Sum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3x3 regW, Region3x3 regC, Region3x3 regE, Region3x3 regSW, Region3x3 regS, Region3x3 regSE){
+ap_uint<14> get9x9Sum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3x3 regW, Region3x3 regC, Region3x3 regE, Region3x3 regSW, Region3x3 regS, Region3x3 regSE){
 #pragma HLS PIPELINE II=9
 #pragma HLS INLINE
 
-  ap_uint<9> sum = 
-    (regNW.region_et() + regN.region_et() + regNE.region_et() +
+  ap_uint<14> sum = 
+     regNW.region_et() + regN.region_et() + regNE.region_et() +
      regW.region_et()  + regC.region_et() + regE.region_et()  +
-     regSW.region_et() + regS.region_et() + regSE.region_et());
+     regSW.region_et() + regS.region_et() + regSE.region_et();
 
   return sum;  
 }
-
+ap_uint<14> isJet(Region9x9 regNW, Region9x9 regN, Region9x9 regNE, Region9x9 regW, Region9x9 regC, Region9x9 regE, Region9x9 regSW, Region9x9 regS, Region9x9 regSE) {
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+  ap_uint<14> sum;
+  if(regC.region_et() > regNE.region_et() and regC.region_et() > regE.region_et() and regC.region_et() > regSE.region_et() and regC.region_et() > regS.region_et() and regC.region_et() >= regN.region_et() and regC.region_et() >= regNW.region_et() and regC.region_et() >= regW.region_et() and regC.region_et() >= regSW.region_et()) {
+     sum = 
+       regNW.region_et() + regN.region_et() + regNE.region_et() +
+       regW.region_et()  + regC.region_et() + regE.region_et()  +
+       regSW.region_et() + regS.region_et() + regSE.region_et();
+  }
+  else{
+     sum = 0;
+  }
+  return sum;
+}
 #endif /* __JETOBJECTS_H__ */
