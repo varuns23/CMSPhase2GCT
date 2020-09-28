@@ -152,7 +152,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       reg9x9[pseuphi-1][pseueta-1] = Region9x9(seed_et, region_et, tphi, teta, time, upper_et, lower_et);//create the 10x10 reg9x9 supertowers	      
     }
   }
-<<<<<<< HEAD
+
   Jet jet[8][8];
 #pragma HLS ARRAY PARTITION variable=jet complete dim=0
   for(pseueta = 1; pseueta<9; pseueta+=1){
@@ -169,10 +169,6 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       jet[pseuphi-1][pseueta-1] = Jet(et, tphi, teta, time); 
     }
   } 
-=======
-	
-	
->>>>>>> bf1d61a49d818f89bdb79d2be67dcf0138509e82
   // Step 3: Pack the outputs
   for(size_t olink=0; olink<10; olink++){
 #pragma LOOP UNROLL
