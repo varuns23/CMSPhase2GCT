@@ -43,7 +43,7 @@ void unpackInputLink(hls::stream<algo::axiword576> &ilink, Tower towers[TOWERS_I
 }
 
 
-void packOutput(Region9x9 region[10], hls::stream<algo::axiword576> &olink){
+void packOutput(Jet region[10], hls::stream<algo::axiword576> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
 #pragma HLS ARRAY_PARTITION variable=region complete dim=0
 #pragma HLS INTERFACE axis port=olink
@@ -51,17 +51,17 @@ void packOutput(Region9x9 region[10], hls::stream<algo::axiword576> &olink){
 
   ap_uint<576> word_576b_;
 
-  word_576b_( 55,   0) = (ap_uint<56>) region[0].data;
-  word_576b_(111,  56) = (ap_uint<56>) region[1].data;
-  word_576b_(167, 112) = (ap_uint<56>) region[2].data;
-  word_576b_(223, 168) = (ap_uint<56>) region[3].data;
-  word_576b_(279, 224) = (ap_uint<56>) region[4].data;
-  word_576b_(335, 280) = (ap_uint<56>) region[5].data;
-  word_576b_(391, 336) = (ap_uint<56>) region[6].data;
-  word_576b_(447, 392) = (ap_uint<56>) region[7].data;
-  word_576b_(503, 448) = (ap_uint<56>) region[8].data;
-  word_576b_(559, 504) = (ap_uint<56>) region[9].data;
-  word_576b_(575, 560) = 0;
+  word_576b_( 29,   0) = (ap_uint<30>) region[0].data;
+  word_576b_( 59,  30) = (ap_uint<30>) region[1].data;
+  word_576b_( 89,  60) = (ap_uint<30>) region[2].data;
+  word_576b_(119,  90) = (ap_uint<30>) region[3].data;
+  word_576b_(149, 120) = (ap_uint<30>) region[4].data;
+  word_576b_(179, 150) = (ap_uint<30>) region[5].data;
+  word_576b_(209, 180) = (ap_uint<30>) region[6].data;
+  word_576b_(239, 210) = (ap_uint<30>) region[7].data;
+  word_576b_(269, 240) = (ap_uint<30>) region[8].data;
+  word_576b_(299, 270) = (ap_uint<30>) region[9].data;
+  word_576b_(575, 300) = 0;
 
   axiword576 r; r.last = 0; r.user = 0;
   r.data = word_576b_;
@@ -119,9 +119,9 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       ap_uint<5> teta = ieta;
       ap_uint<3> time = towers[iphi][ieta].peak_time();
       ap_uint<14> region_et = get3x3Sum(
-	  towers[iphi-1][ieta+1], towers[iphi][ieta+1], towers[iphi+1][ieta+1],
-	  towers[iphi-1][ieta], towers[iphi][ieta], towers[iphi+1][ieta],
-	  towers[iphi-1][ieta-1], towers[iphi][ieta-1], towers[iphi+1][ieta-1]);
+	  towers[iphi+1][ieta-1], towers[iphi+1][ieta], towers[iphi+1][ieta+1],
+	  towers[iphi][ieta-1]  , towers[iphi][ieta]  , towers[iphi][ieta+1]  ,
+	  towers[iphi-1][ieta-1], towers[iphi-1][ieta], towers[iphi-1][ieta+1]);
       reg3x3[pseuphi][pseueta]= Region3x3(seed_et, region_et, tphi, teta, time);//create the 10x10 reg3x3 supertowers	
     }
   }
@@ -137,23 +137,23 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       ap_uint<5>  teta = reg3x3[pseuphi][pseueta].eta();
       ap_uint<3>  time = reg3x3[pseuphi][pseueta].time();
       ap_uint<14> region_et = get9x9Sum(
-          reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
-          reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
-	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
-      ap_uint<14> upper_et = get9x9Sum(
-          reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
-          reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
-	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
-      ap_uint<14> lower_et = get9x9Sum(
-          reg3x3[pseuphi-1][pseueta+1], reg3x3[pseuphi][pseueta+1], reg3x3[pseuphi+1][pseueta+1],
-          reg3x3[pseuphi-1][pseueta]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi+1][pseueta]  ,
-	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi][pseueta-1], reg3x3[pseuphi+1][pseueta-1]);
-
+          reg3x3[pseuphi+1][pseueta-1], reg3x3[pseuphi+1][pseueta], reg3x3[pseuphi+1][pseueta+1],
+          reg3x3[pseuphi][pseueta-1]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi][pseueta+1]  ,
+	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi-1][pseueta], reg3x3[pseuphi-1][pseueta+1]);
+      ap_uint<14> upper_et = getUpperSum(
+          reg3x3[pseuphi+1][pseueta-1], reg3x3[pseuphi+1][pseueta], reg3x3[pseuphi+1][pseueta+1],
+          reg3x3[pseuphi][pseueta-1]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi][pseueta+1]  ,
+	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi-1][pseueta], reg3x3[pseuphi-1][pseueta+1]);
+      ap_uint<14> lower_et = getLowerSum(
+          reg3x3[pseuphi+1][pseueta-1], reg3x3[pseuphi+1][pseueta], reg3x3[pseuphi+1][pseueta+1],
+          reg3x3[pseuphi][pseueta-1]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi][pseueta+1]  ,
+	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi-1][pseueta], reg3x3[pseuphi-1][pseueta+1]);
+  
       reg9x9[pseuphi-1][pseueta-1] = Region9x9(seed_et, region_et, tphi, teta, time, upper_et, lower_et);//create the 10x10 reg9x9 supertowers	      
     }
   }
 
-  Jet jet[8][8];
+  Jet jet[10][10];
 #pragma HLS ARRAY PARTITION variable=jet complete dim=0
   for(pseueta = 1; pseueta<9; pseueta+=1){
 #pragma LOOP UNROLL
@@ -163,16 +163,52 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
       ap_uint<6> teta = reg9x9[pseuphi][pseueta].eta();
       ap_uint<3> time = reg9x9[pseuphi][pseueta].time();
       ap_uint<14> et = isJet(
-          reg9x9[pseuphi-1][pseueta+1], reg9x9[pseuphi][pseueta+1], reg9x9[pseuphi+1][pseueta+1],
-          reg9x9[pseuphi-1][pseueta]  , reg9x9[pseuphi][pseueta]  , reg9x9[pseuphi+1][pseueta]  ,
-	  reg9x9[pseuphi-1][pseueta-1], reg9x9[pseuphi][pseueta-1], reg9x9[pseuphi+1][pseueta-1]);
-      jet[pseuphi-1][pseueta-1] = Jet(et, tphi, teta, time); 
+          reg9x9[pseuphi+1][pseueta-1], reg9x9[pseuphi+1][pseueta], reg9x9[pseuphi+1][pseueta+1],
+          reg9x9[pseuphi][pseueta-1]  , reg9x9[pseuphi][pseueta]  , reg9x9[pseuphi][pseueta+1]  ,
+	  reg9x9[pseuphi-1][pseueta-1], reg9x9[pseuphi-1][pseueta], reg9x9[pseuphi-1][pseueta+1]);
+      jet[pseuphi][pseueta] = Jet(et, tphi, teta, time); 
     }
   } 
+  //clean the falsed jet
+  for(pseuphi = 8; pseuphi>0; pseuphi-=1){
+#pragma LOOP UNROLL
+    for(pseueta = 1; pseueta<9; pseueta+=1){
+#pragma LOOP UNROLL
+       if (checkJetrow(reg9x9[pseuphi][pseueta-1], reg9x9[pseuphi][pseueta], reg9x9[pseuphi][pseueta+1]) == 1){
+	   jet[pseuphi][pseueta-1] = Jet(0, jet[pseuphi][pseueta-1].phi(), jet[pseuphi][pseueta-1].eta(), jet[pseuphi][pseueta-1].time());
+	   jet[pseuphi][pseueta+1] = Jet(0, jet[pseuphi][pseueta+1].phi(), jet[pseuphi][pseueta+1].eta(), jet[pseuphi][pseueta+1].time());
+	   //cout << "jet[" << jet[pseuphi][pseueta].phi() << "," << jet[pseuphi][pseueta].eta() << "row clear" << jet[pseuphi][pseueta].et() << endl;
+       }
+       if (checkJetcol(reg9x9[pseuphi-1][pseueta], reg9x9[pseuphi][pseueta], reg9x9[pseuphi+1][pseueta]) == 1){
+	   jet[pseuphi+1][pseueta] = Jet(0, jet[pseuphi+1][pseueta].phi(), jet[pseuphi+1][pseueta].eta(), jet[pseuphi+1][pseueta].time());
+	   jet[pseuphi-1][pseueta] = Jet(0, jet[pseuphi-1][pseueta].phi(), jet[pseuphi-1][pseueta].eta(), jet[pseuphi-1][pseueta].time());
+	   //cout << "jet[" << jet[pseuphi][pseueta].phi() << "," << jet[pseuphi][pseueta].eta() << "col clear" << jet[pseuphi][pseueta].et() << endl;
+       }
+    }
+  }
+  // output the reg9x9 info and Jet info
+/*
+  for(pseuphi = 10; pseuphi>0; pseuphi-=1){
+#pragma LOOP UNROLL
+    for(pseueta = 0; pseueta<10; pseueta+=1){
+#pragma LOOP UNROLL
+       cout<< "9x9["<<reg9x9[pseuphi-1][pseueta].phi()<<","<<reg9x9[pseuphi-1][pseueta].eta()<<"]="<<reg9x9[pseuphi-1][pseueta].region_et()<<"|";
+    }
+    cout << endl;
+  }
+  for(pseuphi = 10; pseuphi>0; pseuphi-=1){
+#pragma LOOP UNROLL
+    for(pseueta = 0; pseueta<10; pseueta+=1){
+#pragma LOOP UNROLL
+       cout<< "jet["<<jet[pseuphi-1][pseueta].phi()<<","<<jet[pseuphi-1][pseueta].eta()<<"]="<<jet[pseuphi-1][pseueta].et()<<"|";
+    }
+    cout << endl;
+  }
+*/
   // Step 3: Pack the outputs
   for(size_t olink=0; olink<10; olink++){
 #pragma LOOP UNROLL
-    packOutput(reg9x9[olink], link_out[olink]); 
+    packOutput(jet[olink], link_out[olink]); 
   }
 //-  for (size_t olink = 0; olink < N_OUTPUT_LINKS/2; olink++) {
 //-#pragma LOOP UNROLL

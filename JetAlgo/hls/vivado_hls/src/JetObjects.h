@@ -179,7 +179,7 @@ ap_uint<14> isJet(Region9x9 regNW, Region9x9 regN, Region9x9 regNE, Region9x9 re
 #pragma HLS PIPELINE II=9
 #pragma HLS INLINE
   ap_uint<14> sum;
-  if(regC.region_et() > regNE.region_et() and regC.region_et() > regE.region_et() and regC.region_et() > regSE.region_et() and regC.region_et() > regS.region_et() and regC.region_et() >= regN.region_et() and regC.region_et() >= regNW.region_et() and regC.region_et() >= regW.region_et() and regC.region_et() >= regSW.region_et()) {
+  if(regC.region_et() > 0 and regC.region_et() >= regNE.region_et() and regC.region_et() >= regE.region_et() and regC.region_et() >= regSE.region_et() and regC.region_et() >= regS.region_et() and regC.region_et() >= regN.region_et() and regC.region_et() >= regNW.region_et() and regC.region_et() >= regW.region_et() and regC.region_et() >= regSW.region_et()) {
      sum = 
        regNW.region_et() + regN.region_et() + regNE.region_et() +
        regW.region_et()  + regC.region_et() + regE.region_et()  +
@@ -189,5 +189,25 @@ ap_uint<14> isJet(Region9x9 regNW, Region9x9 regN, Region9x9 regNE, Region9x9 re
      sum = 0;
   }
   return sum;
+}
+int checkJetrow(Region9x9 regL, Region9x9 regM, Region9x9 regR){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+    if (regL.region_et()>0 and regR.region_et()>0 and regM.region_et() >= regL.region_et() and regM.region_et() >= regR.region_et()){
+       return 1;
+    } 
+    else{
+       return 0;
+    }
+}
+int checkJetcol(Region9x9 regD, Region9x9 regM, Region9x9 regU){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+    if (regD.region_et()>0 and regU.region_et()>0 and regM.region_et() >= regD.region_et() and regM.region_et() >= regU.region_et()){
+       return 1;
+    } 
+    else{
+       return 0;
+    }
 }
 #endif /* __JETOBJECTS_H__ */
