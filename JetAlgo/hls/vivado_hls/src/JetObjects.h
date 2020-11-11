@@ -37,10 +37,10 @@ class Jet{
 
     operator ap_uint<30>() {return (ap_uint<30>) data;}
 
-    ap_uint<16> et()     {return ((data) & 0xFFFF);}
-    ap_uint<5>  phi()    {return ((data >> 16) & 0x1F);}
-    ap_uint<6>  eta()    {return ((data >> 21) & 0x3F);}
-    ap_uint<3>  time()   {return ((data >> 27) & 0x7);}
+    ap_uint<16> et()  const    {return ((data) & 0xFFFF);}
+    ap_uint<5>  phi()  const   {return ((data >> 16) & 0x1F);}
+    ap_uint<6>  eta()    const {return ((data >> 21) & 0x3F);}
+    ap_uint<3>  time()   const {return ((data >> 27) & 0x7);}
 
 #ifndef __SYNTHESIS__
     string toString() {
@@ -84,7 +84,7 @@ class Region3x3{
 
 #ifndef __SYNTHESIS__
     string toString() {
-      return "Region [" + 
+      return "Region3x3 [" + 
 	to_string(this->seed_et()) + "," + 
 	to_string(this->region_et()) + ", (" + 
 	to_string(this->phi()) + ", " + 
@@ -96,6 +96,48 @@ class Region3x3{
     ap_uint<38> data;
 };
 
+class Region9x9{
+
+  public:
+    Region9x9() : data(0){;}
+
+    Region9x9(ap_uint<10> seed_et, ap_uint<14> region_et, ap_uint<5> phi, ap_uint<6> eta, ap_uint<3> time){
+      data = (seed_et) |
+	  (((ap_uint<56>) region_et) << 10) |
+	  (((ap_uint<56>)       phi) << 24) |
+	  (((ap_uint<56>)       eta) << 29) |
+	  (((ap_uint<56>)      time) << 35);
+    }
+    Region9x9(ap_uint<56> i){ data = i;}
+
+    Region9x9& operator=(const Region9x9& rhs) {
+      data = rhs.data;
+      return *this;
+    }
+
+    operator ap_uint<56>() {return (ap_uint<56>) data;}
+            
+    ap_uint<10> seed_et()    {return ((data) & 0x3FF);}
+    ap_uint<14> region_et()  {return ((data >> 10) & 0x3FFF);}
+    ap_uint<5>  phi()        {return ((data >> 24) & 0x1F);}
+    ap_uint<6>  eta()        {return ((data >> 29) & 0x3F);}
+    ap_uint<3>  time()       {return ((data >> 35) & 0x7);}
+
+#ifndef __SYNTHESIS__
+    string toString() {
+      return "Region9x9 [" + 
+	to_string(this->seed_et()) + "," + 
+	to_string(this->region_et()) + ", (" + 
+	to_string(this->phi()) + ", " + 
+	to_string(this->eta()) + "), " + 
+	to_string(this->time()) + "] "; 
+    }
+#endif
+
+    ap_uint<56> data;
+};
+
+/*
 class Region9x9{
 
   public:
@@ -134,7 +176,7 @@ class Region9x9{
 	to_string(this->region_et()) + ", (" + 
 	to_string(this->phi()) + ", " + 
 	to_string(this->eta()) + "), " + 
-	to_string(this->time()) + ", ("; 
+	to_string(this->time()) + "]"; 
         to_string(this->upper_et()) + ", ";
         to_string(this->lower_et()) + ")] ";
     }
@@ -143,7 +185,8 @@ class Region9x9{
     ap_uint<56> data;
 
 };
-
+*/
+/*
 ap_uint<9> getUpperSum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3x3 regW, Region3x3 regC, Region3x3 regE, Region3x3 regSW, Region3x3 regS, Region3x3 regSE){
 #pragma HLS PIPELINE II=9
 #pragma HLS INLINE
@@ -164,6 +207,7 @@ ap_uint<9> getLowerSum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3
  
   return sum;
 }
+*/
 ap_uint<14> get9x9Sum(Region3x3 regNW, Region3x3 regN, Region3x3 regNE, Region3x3 regW, Region3x3 regC, Region3x3 regE, Region3x3 regSW, Region3x3 regS, Region3x3 regSE){
 #pragma HLS PIPELINE II=9
 #pragma HLS INLINE
