@@ -206,16 +206,22 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
        if(jet[pseuphi][pseueta].et()>0){
 	  reljet[jetnum]=jet[pseuphi][pseueta];
 	  jetnum+=1;
-	  cout << reljet[jetnum-1].et() << endl;
+	  //cout << reljet[jetnum-1].et() << endl;
        } 
     }
   }
-  Jet sortjet[N]; 
+  Jet midsortjet[N]; 
+#pragma HLS ARRAY PARTITION variable=midsortjet complete dim=0
+  bitonicSort32(reljet, midsortjet);
+  Jet sortjet[N];
 #pragma HLS ARRAY PARTITION variable=sortjet complete dim=0
-  bitonicSort32(reljet, sortjet);
- cout << sortjet[0].et() <<endl; 
+  for(size_t cnt=0; cnt<jetnum; cnt++){
+#pragma LOOP UNROLL
+    sortjet[cnt]=midsortjet[N-jetnum+cnt];
+  }
+ //cout << sortjet[0].et() <<endl; 
   // Step 3: Pack the outputs
-  for(size_t olink=0; olink<10; olink++){
+  for(size_t olink=0; olink<3; olink++){
 #pragma LOOP UNROLL
     packOutput(&sortjet[olink], link_out[olink]); 
   }
