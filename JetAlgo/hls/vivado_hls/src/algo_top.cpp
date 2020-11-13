@@ -46,29 +46,41 @@ void unpackInputLink(hls::stream<algo::axiword576> &ilink, Tower towers[TOWERS_I
 }
 
 
-void packOutput(Jet region[10], hls::stream<algo::axiword576> &olink){
+void packOutput(Jet jet[16], hls::stream<algo::axiword576> &olink){
 #pragma HLS PIPELINE II=N_OUTPUT_WORDS_PER_FRAME
-#pragma HLS ARRAY_PARTITION variable=region complete dim=0
+#pragma HLS ARRAY_PARTITION variable=jet complete dim=0
 #pragma HLS INTERFACE axis port=olink
 #pragma HLS INLINE
 
   ap_uint<576> word_576b_;
 
-  word_576b_( 29,   0) = (ap_uint<30>) region[0].data;
-  word_576b_( 59,  30) = (ap_uint<30>) region[1].data;
+  word_576b_( 29,   0) = (ap_uint<30>) jet[0].data;
+  word_576b_( 59,  30) = (ap_uint<30>) jet[1].data;
   word_576b_( 63,  60) = 0;
-  word_576b_( 93,  64) = (ap_uint<30>) region[2].data;
-  word_576b_(123,  94) = (ap_uint<30>) region[3].data;
+  word_576b_( 93,  64) = (ap_uint<30>) jet[2].data;
+  word_576b_(123,  94) = (ap_uint<30>) jet[3].data;
   word_576b_(127, 124) = 0;
-  word_576b_(157, 128) = (ap_uint<30>) region[4].data;
-  word_576b_(187, 158) = (ap_uint<30>) region[5].data;
+  word_576b_(157, 128) = (ap_uint<30>) jet[4].data;
+  word_576b_(187, 158) = (ap_uint<30>) jet[5].data;
   word_576b_(191, 188) = 0;
-  word_576b_(221, 192) = (ap_uint<30>) region[6].data;
-  word_576b_(251, 222) = (ap_uint<30>) region[7].data;
+  word_576b_(221, 192) = (ap_uint<30>) jet[6].data;
+  word_576b_(251, 222) = (ap_uint<30>) jet[7].data;
   word_576b_(255, 252) = 0;
-  word_576b_(285, 256) = (ap_uint<30>) region[8].data;
-  word_576b_(315, 286) = (ap_uint<30>) region[9].data;
-  word_576b_(575, 316) = 0;
+  word_576b_(285, 256) = (ap_uint<30>) jet[8].data;
+  word_576b_(315, 286) = (ap_uint<30>) jet[9].data;
+  word_576b_(319, 316) = 0;
+  word_576b_(349, 320) = (ap_uint<30>) jet[10].data;
+  word_576b_(379, 350) = (ap_uint<30>) jet[11].data;
+  word_576b_(383, 380) = 0;
+  word_576b_(413, 384) = (ap_uint<30>) jet[12].data;
+  word_576b_(443, 414) = (ap_uint<30>) jet[13].data;
+  word_576b_(447, 444) = 0;
+  word_576b_(477, 448) = (ap_uint<30>) jet[14].data;
+  word_576b_(507, 478) = (ap_uint<30>) jet[15].data;
+  word_576b_(511, 508) = 0;
+  word_576b_(541, 512) = (ap_uint<30>) jet[14].data;
+  word_576b_(571, 542) = (ap_uint<30>) jet[15].data;
+  word_576b_(575, 572) = 0;
 
   axiword576 r; r.last = 0; r.user = 0;
   r.data = word_576b_;
@@ -199,31 +211,29 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
   size_t jetnum = 0;
   Jet reljet[N];
 #pragma HLS ARRAY PARTITION variable=reljet complete dim=0
-   for(pseuphi = 8; pseuphi>0; pseuphi-=1){
+  for(pseuphi = 8; pseuphi>0; pseuphi-=1){
 #pragma LOOP UNROLL
     for(pseueta = 1; pseueta<9; pseueta+=1){
 #pragma LOOP UNROLL
-       if(jet[pseuphi][pseueta].et()>0){
-	  reljet[jetnum]=jet[pseuphi][pseueta];
-	  jetnum+=1;
-	  //cout << reljet[jetnum-1].et() << endl;
-       } 
+      if(jet[pseuphi][pseueta].et()>0){
+        reljet[jetnum]=jet[pseuphi][pseueta];
+	jetnum+=1;
+      } 
     }
   }
-  Jet midsortjet[N]; 
-#pragma HLS ARRAY PARTITION variable=midsortjet complete dim=0
-  bitonicSort32(reljet, midsortjet);
-  Jet sortjet[N];
+  Jet sortjet[N]; 
 #pragma HLS ARRAY PARTITION variable=sortjet complete dim=0
-  for(size_t cnt=0; cnt<jetnum; cnt++){
-#pragma LOOP UNROLL
-    sortjet[cnt]=midsortjet[N-jetnum+cnt];
-  }
- //cout << sortjet[0].et() <<endl; 
+  bitonicSort32(reljet, sortjet);//sort the mix of jets and empty jets
+  Jet partjet[N/2];// divide into two part for output
+#pragma HLS ARRAY PARTITION variable=partjet complete dim=0
   // Step 3: Pack the outputs
-  for(size_t olink=0; olink<3; olink++){
+  for(size_t olink=0; olink<2; olink++){
 #pragma LOOP UNROLL
-    packOutput(&sortjet[olink], link_out[olink]); 
+    for(size_t olink2=0; olink2<N/2; olink2++){
+#pragma LOOP UNROLL
+      partjet[olink2]=(N-jetnum+olink*16+olink2<N)? sortjet[N-jetnum+olink*16+olink2] : Jet();
+    }
+    packOutput(partjet, link_out[olink]); 
   }
 //-  for (size_t olink = 0; olink < N_OUTPUT_LINKS/2; olink++) {
 //-#pragma LOOP UNROLL
