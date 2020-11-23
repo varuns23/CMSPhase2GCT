@@ -1,12 +1,9 @@
-#include "algo_top_parameters.h"
-#include "algo_top.h"
 #include <algorithm>
 #include <utility>
 
-#include "algo_top.h"
-
+#include "eta_stitch.h"
+#include "eta_stitch_parameters.h"
 #include "objects.h"
-#include "stitchTowers.h"
 
 #include <cstdlib>
 #include <sstream>
