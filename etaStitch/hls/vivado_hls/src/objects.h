@@ -1,8 +1,6 @@
 #ifndef __OBJECTS_H__
 #define __OBJECTS_H__
 
-#include "algo_top_parameters.h"
-
 using namespace std;
 
 class Tower {
