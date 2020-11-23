@@ -78,9 +78,6 @@ if {$opt(export)} {
   export_design -format ip_catalog
   set time_end [clock clicks -milliseconds]
   report_time "EXPORT IP" $time_start $time_end
-
-  puts "***** GENERATING WRAPPERS *****"
-  puts [exec python ../wrapper_generator.py src/algo_top_parameters.h --wrapper ../rtl/algo_top_wrapper.vhd]
 }
 
 exit
