@@ -234,6 +234,7 @@ ap_uint<14> isJet(Region9x9 regNW, Region9x9 regN, Region9x9 regNE, Region9x9 re
   }
   return sum;
 }
+/*
 int checkJetrow(Region9x9 regL, Region9x9 regM, Region9x9 regR){
 #pragma HLS PIPELINE II=9
 #pragma HLS INLINE
@@ -254,4 +255,60 @@ int checkJetcol(Region9x9 regD, Region9x9 regM, Region9x9 regU){
        return 0;
     }
 }
+*/
+/*
+size_t jetcvt(Jet in[10][10], Jet out[32]){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+#pragma HLS ARRAY_PARTITION variable=in complete dim=0
+#pragma HLS ARRAY_PARTITION variable=out complete dim=0
+   size_t jetnum = 0;	
+   for(size_t pseuphi = 8; pseuphi>0; pseuphi-=1){
+#pragma HLS unroll
+     for(size_t pseueta = 1; pseueta<9; pseueta+=1){
+#pragma HLS unroll
+       if(in[pseuphi][pseueta].et()>0){
+         out[jetnum]=in[pseuphi][pseueta];
+	 jetnum++;
+       } 
+     }
+   }
+   return jetnum;
+}
+*/
+size_t jetindcvt(size_t phi, size_t eta, Jet check[10][10], Jet out[32], size_t jetnum){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+#pragma HLS ARRAY_PARTITION variable=check complete dim=0
+#pragma HLS ARRAY_PARTITION variable=out complete dim=0
+   if(check[phi][eta].et()>0){
+      out[jetnum]=check[phi][eta];
+      jetnum+=1;
+   } 
+   return jetnum;
+}
+
+
+void jetrowcheck(size_t pseuphi, size_t pseueta, Region9x9 in[10][10], Jet out[10][10]){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+#pragma HLS ARRAY_PARTITION variable=in complete dim=0 
+#pragma HLS ARRAY_PARTITION variable=out complete dim=0
+    if (in[pseuphi][pseueta-1].region_et()>0 and in[pseuphi][pseueta+1].region_et()>0 and in[pseuphi][pseueta].region_et() >= in[pseuphi][pseueta-1].region_et() and in[pseuphi][pseueta].region_et() >= in[pseuphi][pseueta+1].region_et()){
+       out[pseuphi][pseueta-1] = Jet(0, out[pseuphi][pseueta-1].phi(), out[pseuphi][pseueta-1].eta(), out[pseuphi][pseueta-1].time());
+       out[pseuphi][pseueta+1] = Jet(0, out[pseuphi][pseueta+1].phi(), out[pseuphi][pseueta+1].eta(), out[pseuphi][pseueta+1].time());
+    } 
+}
+void jetcolcheck(size_t pseuphi, size_t pseueta, Region9x9 in[10][10], Jet out[10][10]){
+#pragma HLS PIPELINE II=9
+#pragma HLS INLINE
+#pragma HLS ARRAY_PARTITION variable=in complete dim=0
+#pragma HLS ARRAY_PARTITION variable=out complete dim=0
+    if (in[pseuphi-1][pseueta].region_et()>0 and in[pseuphi+1][pseueta].region_et()>0 and in[pseuphi][pseueta].region_et() >= in[pseuphi-1][pseueta].region_et() and in[pseuphi][pseueta].region_et() >= in[pseuphi+1][pseueta].region_et()){
+       out[pseuphi-1][pseueta] = Jet(0, out[pseuphi-1][pseueta].phi(), out[pseuphi-1][pseueta].eta(), out[pseuphi-1][pseueta].time());
+       out[pseuphi+1][pseueta] = Jet(0, out[pseuphi+1][pseueta].phi(), out[pseuphi+1][pseueta].eta(), out[pseuphi+1][pseueta].time());
+    } 
+}
+
+
 #endif /* __JETOBJECTS_H__ */

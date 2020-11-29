@@ -2,6 +2,7 @@
 #include "algo_top.h"
 #include <algorithm>
 #include <utility>
+//#include <vector>
 #include "../../../../include/objects.h"
 #include "JetObjects.h"
 #include "BitonicSort-HLS/bitonic32hls/bitonicSort32.h"
@@ -116,7 +117,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 	
   // Step 2: Jet Algo goes here
   Region3x3 reg3x3[12][12];//one extra tower on each side for reg9x9 algo
-#pragma HLS ARRAY_PARTITION variable=reg3x3 complete dim=0
+#pragma HLS ARRAY_PARTITION variable=reg3x3 complete dim=0 
   size_t pseueta=0;
   size_t pseuphi=0;
   for(pseueta = 0; pseueta<12; pseueta+=1){
@@ -174,7 +175,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
   }
 
   Jet jet[10][10];
-#pragma HLS ARRAY PARTITION variable=jet complete dim=0
+#pragma HLS ARRAY_PARTITION variable=jet complete dim=0
   for(pseueta = 1; pseueta<9; pseueta+=1){
 #pragma LOOP UNROLL
     for(pseuphi = 1; pseuphi<9; pseuphi+=1){
@@ -194,6 +195,7 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 #pragma LOOP UNROLL
     for(pseueta = 1; pseueta<9; pseueta+=1){
 #pragma LOOP UNROLL
+       /*	    
        if (checkJetrow(reg9x9[pseuphi][pseueta-1], reg9x9[pseuphi][pseueta], reg9x9[pseuphi][pseueta+1]) == 1){
 	   jet[pseuphi][pseueta-1] = Jet(0, jet[pseuphi][pseueta-1].phi(), jet[pseuphi][pseueta-1].eta(), jet[pseuphi][pseueta-1].time());
 	   jet[pseuphi][pseueta+1] = Jet(0, jet[pseuphi][pseueta+1].phi(), jet[pseuphi][pseueta+1].eta(), jet[pseuphi][pseueta+1].time());
@@ -204,28 +206,27 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
 	   jet[pseuphi-1][pseueta] = Jet(0, jet[pseuphi-1][pseueta].phi(), jet[pseuphi-1][pseueta].eta(), jet[pseuphi-1][pseueta].time());
 	   //cout << "jet[" << jet[pseuphi][pseueta].phi() << "," << jet[pseuphi][pseueta].eta() << "col clear" << jet[pseuphi][pseueta].et() << endl;
        }
+       */
+       jetrowcheck(pseuphi, pseueta, reg9x9, jet);
+       jetcolcheck(pseuphi, pseueta, reg9x9, jet);
     }
   }
-  
-  //find the real jet array
+ //find the real jet array
+  Jet reljet[32];
+#pragma HLS ARRAY_PARTITION variable=reljet complete dim=0
   size_t jetnum = 0;
-  Jet reljet[N];
-#pragma HLS ARRAY PARTITION variable=reljet complete dim=0
-  for(pseuphi = 8; pseuphi>0; pseuphi-=1){
-#pragma LOOP UNROLL
-    for(pseueta = 1; pseueta<9; pseueta+=1){
-#pragma LOOP UNROLL
-      if(jet[pseuphi][pseueta].et()>0){
-        reljet[jetnum]=jet[pseuphi][pseueta];
-	jetnum+=1;
-      } 
-    }
-  }
+  for(size_t pseuphi = 8; pseuphi>0; pseuphi-=1){
+#pragma HLS UNROLL 
+     for(size_t pseueta = 1; pseueta<9; pseueta+=1){
+#pragma HLS UNROLL 
+	jetnum = jetindcvt(pseuphi, pseueta, jet, reljet, jetnum);
+     }
+   }
   Jet sortjet[N]; 
-#pragma HLS ARRAY PARTITION variable=sortjet complete dim=0
+#pragma HLS ARRAY_PARTITION variable=sortjet complete dim=0
   bitonicSort32(reljet, sortjet);//sort the mix of jets and empty jets
   Jet partjet[N/2];// divide into two part for output
-#pragma HLS ARRAY PARTITION variable=partjet complete dim=0
+#pragma HLS ARRAY_PARTITION variable=partjet complete dim=0 
   // Step 3: Pack the outputs
   for(size_t olink=0; olink<2; olink++){
 #pragma LOOP UNROLL

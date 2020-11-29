@@ -145,8 +145,8 @@ void SixteenGreatFir(const Jet &x0, const Jet &x1, const Jet &x2, const Jet &x3,
 void bitonicSort32(Jet in[N], Jet out[N]){
 #pragma HLS PIPELINE II=9
 
-#pragma HLS ARRAY_PARTITION variable=in
-#pragma HLS ARRAY_PARTITION variable=out
+#pragma HLS ARRAY_PARTITION variable=in complete dim=0
+#pragma HLS ARRAY_PARTITION variable=out complete dim=0
 
 GreaterSmaller result;
 
