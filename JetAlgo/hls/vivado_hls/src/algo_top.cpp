@@ -2,7 +2,6 @@
 #include "algo_top.h"
 #include <algorithm>
 #include <utility>
-//#include <vector>
 #include "../../../../include/objects.h"
 #include "JetObjects.h"
 #include "BitonicSort-HLS/bitonic32hls/bitonicSort32.h"
@@ -160,16 +159,6 @@ void algo_top(hls::stream<axiword576> link_in[N_INPUT_LINKS], hls::stream<axiwor
           reg3x3[pseuphi+1][pseueta-1], reg3x3[pseuphi+1][pseueta], reg3x3[pseuphi+1][pseueta+1],
           reg3x3[pseuphi][pseueta-1]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi][pseueta+1]  ,
 	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi-1][pseueta], reg3x3[pseuphi-1][pseueta+1]);
-      /* 
-      ap_uint<14> upper_et = getUpperSum(
-          reg3x3[pseuphi+1][pseueta-1], reg3x3[pseuphi+1][pseueta], reg3x3[pseuphi+1][pseueta+1],
-          reg3x3[pseuphi][pseueta-1]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi][pseueta+1]  ,
-	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi-1][pseueta], reg3x3[pseuphi-1][pseueta+1]);
-      ap_uint<14> lower_et = getLowerSum(
-          reg3x3[pseuphi+1][pseueta-1], reg3x3[pseuphi+1][pseueta], reg3x3[pseuphi+1][pseueta+1],
-          reg3x3[pseuphi][pseueta-1]  , reg3x3[pseuphi][pseueta]  , reg3x3[pseuphi][pseueta+1]  ,
-	  reg3x3[pseuphi-1][pseueta-1], reg3x3[pseuphi-1][pseueta], reg3x3[pseuphi-1][pseueta+1]);
-      */
       reg9x9[pseuphi-1][pseueta-1] = Region9x9(seed_et, region_et, tphi, teta, time);//create the 10x10 reg9x9 supertowers	      
     }
   }
