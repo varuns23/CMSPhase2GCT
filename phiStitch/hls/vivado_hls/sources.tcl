@@ -1,14 +1,11 @@
 ## Set the top level module
-set_top algo_top
+set_top phiStitchStream
 
 #### Add source code
-add_files src/algo_top_parameters.h
-add_files src/algo_top.h
-add_files src/algo_top.cpp
-add_files src/stitchPhi.h
-add_files ../../../include/objects.h
-add_files ../../../include/stitchTower.h
-add_files ../../../include/stitchTower.cpp
+add_files src/phi_stitch_parameters.h
+add_files src/phi_stitch.h
+add_files src/phi_stitch.cpp
+add_files src/objects.h
 
 ### Add testbed files
 add_files -tb src/algo_top_tb.cpp
