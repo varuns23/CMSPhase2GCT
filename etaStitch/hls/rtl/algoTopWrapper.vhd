@@ -27,15 +27,15 @@ end algoTopWrapper;
 
 architecture rtl of algoTopWrapper is
 
-  constant N_STREAMS_ETA_STICH  : integer := 32;
+  constant N_STREAMS_ALGO  : integer := 36;
 
-    signal axiStreamInEtaStitch0  : AxiStreamMasterArray(0 to N_STREAMS_ETA_STICH-1);
-    signal axiStreamOutEtaStitch0 : AxiStreamMasterArray(0 to N_STREAMS_ETA_STICH-1);
+    signal axiStreamInSLR0  : AxiStreamMasterArray(0 to N_STREAMS_ALGO-1);
+    signal axiStreamOutSLR0 : AxiStreamMasterArray(0 to N_STREAMS_ALGO-1);
 
-    signal axiStreamInEtaStitch1  : AxiStreamMasterArray(0 to N_STREAMS_ETA_STICH-1);
-    signal axiStreamOutEtaStitch1 : AxiStreamMasterArray(0 to N_STREAMS_ETA_STICH-1);
+    signal axiStreamInSLR1  : AxiStreamMasterArray(0 to N_STREAMS_ALGO-1);
+    signal axiStreamOutSLR1 : AxiStreamMasterArray(0 to N_STREAMS_ALGO-1);
 
-  constant ETA_STITCH_0_MAP_C : IntegerArray(0 to N_STREAMS_ETA_STICH-1) := (
+  constant SLR_0_MAP_C : IntegerArray(0 to N_STREAMS_ALGO-1) := (
     0  => 28,
     1  => 29,
     2  => 30,
@@ -67,10 +67,14 @@ architecture rtl of algoTopWrapper is
     28 => 84,
     29 => 85,
     30 => 86,
-    31 => 87
+    31 => 87,
+    32 => 88,
+    33 => 89,
+    34 => 90,
+    35 => 91
     );
 
-  constant ETA_STITCH_1_MAP_C : IntegerArray(0 to N_STREAMS_ETA_STICH-1) := (
+  constant SLR_1_MAP_C : IntegerArray(0 to N_STREAMS_ALGO-1) := (
     0  => 12,
     1  => 13,
     2  => 14,
@@ -102,26 +106,30 @@ architecture rtl of algoTopWrapper is
     28 => 68,
     29 => 69,
     30 => 70,
-    31 => 71
+    31 => 71,
+    32 => 72,
+    33 => 73,
+    34 => 74,
+    35 => 75
     );
 
 begin
 
-   gen_remap : for idx in 0 to N_STREAMS_ETA_STICH-1 generate
+   gen_remap : for idx in 0 to N_STREAMS_ALGO-1 generate
    
-        axiStreamInEtaStitch0(idx)  <= axiStreamIn(ETA_STITCH_0_MAP_C(idx));
-        axiStreamOut(ETA_STITCH_0_MAP_C(idx))  <= axiStreamOutEtaStitch0(idx);
+        axiStreamInSLR0(idx)  <= axiStreamIn(SLR_0_MAP_C(idx));
+        axiStreamOut(SLR_0_MAP_C(idx))  <= axiStreamOutSLR0(idx);
 
-        axiStreamInEtaStitch1(idx)  <= axiStreamIn(ETA_STITCH_1_MAP_C(idx));
-        axiStreamOut(ETA_STITCH_1_MAP_C(idx))  <= axiStreamOutEtaStitch1(idx);
+        axiStreamInSLR1(idx)  <= axiStreamIn(SLR_1_MAP_C(idx));
+        axiStreamOut(SLR_1_MAP_C(idx))  <= axiStreamOutSLR1(idx);
 
    
    end generate;
 
-U_etaStitch0: entity work.etaStitchStreamWrapper
+U_algo0: entity work.algoStreamWrapper
   generic map(
-    N_INPUT_STREAMS  => 32,
-    N_OUTPUT_STREAMS => 32
+    N_INPUT_STREAMS  => 36,
+    N_OUTPUT_STREAMS => 36
     )
   port map(
     -- Algo Control/Status Signals
@@ -133,15 +141,15 @@ U_etaStitch0: entity work.etaStitchStreamWrapper
     algoReady=>  open,
 
     -- AXI-Stream In/Out Ports
-    axiStreamIn => axiStreamInEtaStitch0, 
-    axiStreamOut => axiStreamOutEtaStitch0
+    axiStreamIn => axiStreamInSLR0, 
+    axiStreamOut => axiStreamOutSLR0
     );
 
 
-U_etaStitch1: entity work.etaStitchStreamWrapper
+U_algo1: entity work.algoStreamWrapper
   generic map(
-    N_INPUT_STREAMS  => 32,
-    N_OUTPUT_STREAMS => 32
+    N_INPUT_STREAMS  => 36,
+    N_OUTPUT_STREAMS => 36
     )
   port map(
     -- Algo Control/Status Signals
@@ -153,8 +161,8 @@ U_etaStitch1: entity work.etaStitchStreamWrapper
     algoReady=>  open,
 
     -- AXI-Stream In/Out Ports
-    axiStreamIn => axiStreamInEtaStitch1, 
-    axiStreamOut => axiStreamOutEtaStitch1
+    axiStreamIn => axiStreamInSLR1, 
+    axiStreamOut => axiStreamOutSLR1
     );
 
 end rtl;

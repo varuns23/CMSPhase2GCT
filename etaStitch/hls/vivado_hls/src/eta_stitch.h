@@ -19,6 +19,6 @@ typedef struct outputWord {
 	ap_uint<1> last;
 } outputWord;
 
-void etaStitchStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outputWord> link_out[N_OUTPUT_LINKS]);
+void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outputWord> link_out[N_OUTPUT_LINKS]);
 
 #endif /* !__ETA_STITCH_H__ */

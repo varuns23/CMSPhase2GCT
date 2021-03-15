@@ -1,5 +1,5 @@
 ## Set the top level module
-set_top etaStitchStream
+set_top algoStream
 
 #### Add source code
 add_files src/eta_stitch_parameters.h

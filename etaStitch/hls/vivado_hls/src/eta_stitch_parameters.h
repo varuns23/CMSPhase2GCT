@@ -16,7 +16,7 @@ const int N_WORDS_PER_FRAME	= 9;
 
 /** Algorithm specific parameters **/
 #define TOWERS_IN_ETA 17
-#define TOWERS_IN_PHI 32
+#define TOWERS_IN_PHI 36
 
 /** More common algorithm definitions, do not remove **/
 

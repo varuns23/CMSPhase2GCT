@@ -5,10 +5,10 @@ use ieee.numeric_std.all;
 use work.StdRtlPkg.all;
 use work.AxiStreamPkg.all;
 
-entity etaStitchStreamWrapper is
+entity algoStreamWrapper is
   generic (
-    N_INPUT_STREAMS  : integer := 32;
-    N_OUTPUT_STREAMS : integer := 32
+    N_INPUT_STREAMS  : integer := 36;
+    N_OUTPUT_STREAMS : integer := 36
     );
   port (
     -- Algo Control/Status Signals
@@ -23,9 +23,9 @@ entity etaStitchStreamWrapper is
     axiStreamIn  : in  AxiStreamMasterArray(0 to N_INPUT_STREAMS-1);
     axiStreamOut : out AxiStreamMasterArray(0 to N_OUTPUT_STREAMS-1) := (others => AXI_STREAM_MASTER_INIT_C)
     );
-end etaStitchStreamWrapper;
+end algoStreamWrapper;
 
-architecture rtl of etaStitchStreamWrapper is
+architecture rtl of algoStreamWrapper is
 
   signal algoRstD1, algoRstD1n : sl;
   signal algoStartD1           : sl;
@@ -37,7 +37,7 @@ begin
 
   algoStartD1 <= algoStart when rising_edge(algoClk);
 
-  U_etaStitchStream : entity work.etaStitchStream
+  U_algoStream : entity work.algoStream
     port map (
       ap_clk   => algoClk,
       ap_rst_n => algoRstD1n,
@@ -206,6 +206,26 @@ begin
       link_in_31_TVALID    => axiStreamIn(31).tValid,
       link_in_31_TLAST(0)  => axiStreamIn(31).tLast,
       link_in_31_TREADY    => open, 
+      link_in_32_TUSER     => axiStreamIn(32).tUser(7 downto 0),
+      link_in_32_TDATA     => axiStreamIn(32).tData(63 downto 0),
+      link_in_32_TVALID    => axiStreamIn(32).tValid,
+      link_in_32_TLAST(0)  => axiStreamIn(32).tLast,
+      link_in_32_TREADY    => open, 
+      link_in_33_TUSER     => axiStreamIn(33).tUser(7 downto 0),
+      link_in_33_TDATA     => axiStreamIn(33).tData(63 downto 0),
+      link_in_33_TVALID    => axiStreamIn(33).tValid,
+      link_in_33_TLAST(0)  => axiStreamIn(33).tLast,
+      link_in_33_TREADY    => open, 
+      link_in_34_TUSER     => axiStreamIn(34).tUser(7 downto 0),
+      link_in_34_TDATA     => axiStreamIn(34).tData(63 downto 0),
+      link_in_34_TVALID    => axiStreamIn(34).tValid,
+      link_in_34_TLAST(0)  => axiStreamIn(34).tLast,
+      link_in_34_TREADY    => open, 
+      link_in_35_TUSER     => axiStreamIn(35).tUser(7 downto 0),
+      link_in_35_TDATA     => axiStreamIn(35).tData(63 downto 0),
+      link_in_35_TVALID    => axiStreamIn(35).tValid,
+      link_in_35_TLAST(0)  => axiStreamIn(35).tLast,
+      link_in_35_TREADY    => open, 
       link_out_0_TUSER     => axiStreamOut(0).tUser(7 downto 0),
       link_out_0_TDATA     => axiStreamOut(0).tData(63 downto 0),
       link_out_0_TVALID    => axiStreamOut(0).tValid,
@@ -365,7 +385,27 @@ begin
       link_out_31_TDATA    => axiStreamOut(31).tData(63 downto 0),
       link_out_31_TVALID   => axiStreamOut(31).tValid,
       link_out_31_TLAST(0) => axiStreamOut(31).tLast,
-      link_out_31_TREADY   => '1' 
+      link_out_31_TREADY   => '1', 
+      link_out_32_TUSER    => axiStreamOut(32).tUser(7 downto 0),
+      link_out_32_TDATA    => axiStreamOut(32).tData(63 downto 0),
+      link_out_32_TVALID   => axiStreamOut(32).tValid,
+      link_out_32_TLAST(0) => axiStreamOut(32).tLast,
+      link_out_32_TREADY   => '1', 
+      link_out_33_TUSER    => axiStreamOut(33).tUser(7 downto 0),
+      link_out_33_TDATA    => axiStreamOut(33).tData(63 downto 0),
+      link_out_33_TVALID   => axiStreamOut(33).tValid,
+      link_out_33_TLAST(0) => axiStreamOut(33).tLast,
+      link_out_33_TREADY   => '1', 
+      link_out_34_TUSER    => axiStreamOut(34).tUser(7 downto 0),
+      link_out_34_TDATA    => axiStreamOut(34).tData(63 downto 0),
+      link_out_34_TVALID   => axiStreamOut(34).tValid,
+      link_out_34_TLAST(0) => axiStreamOut(34).tLast,
+      link_out_34_TREADY   => '1', 
+      link_out_35_TUSER    => axiStreamOut(35).tUser(7 downto 0),
+      link_out_35_TDATA    => axiStreamOut(35).tData(63 downto 0),
+      link_out_35_TVALID   => axiStreamOut(35).tValid,
+      link_out_35_TLAST(0) => axiStreamOut(35).tLast,
+      link_out_35_TREADY   => '1' 
       );
 
 

@@ -143,7 +143,7 @@ void processOutputStream(Tower twrs[TOWERS_IN_ETA], hls::stream<outputWord> &lin
 
 }
 
-void etaStitchStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outputWord> link_out[N_OUTPUT_LINKS]) {
+void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outputWord> link_out[N_OUTPUT_LINKS]) {
 
 #pragma HLS INTERFACE axis port=link_in
 #pragma HLS INTERFACE axis port=link_out
