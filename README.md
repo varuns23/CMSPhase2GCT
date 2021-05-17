@@ -22,26 +22,33 @@ export algo = TauAlgo
 For HLS simulation
 ```bash
 cd $AP_FW_BASE_DIR/CMSPhase2GCT/$algo/hls/vivado_hls/
-vivado_hls -f run_hls.tcl csim=1 tv_in=$PWD/data/test_in.txt tv_out=$PWD/data/test_out.txt tv_ref=$PWD/data/test_out_ref.txt
+vivado_hls -f run_hls.tcl csim=1 tv_in=$PWD/data/tb_set1_inp.txt tv_out=$PWD/data/tb_set1_out.txt tv_ref=$PWD/data/tb_set1_out_ref.txt
 ```
 
 Synthesis and exporting RTL
 ```bash
 cd $AP_FW_BASE_DIR/CMSPhase2GCT/$algo/hls/vivado_hls/
-vivado_hls -f run_hls.tcl synth=1 export=1
+vivado_hls -f run_hls.tcl synth=1 export=1 tv_in=$PWD/data/tb_set1_inp.txt tv_out=$PWD/data/tb_set1_out.txt tv_ref=$PWD/data/tb_set1_out_ref.txt
+
 
 ```
 Simulation, Synthesis, Verification and RTL generation in Vivado HLS:
 ```bash
 cd $AP_FW_BASE_DIR/CMSPhase2GCT/$algo/hls/vivado_hls/
-vivado_hls -f run_hls.tcl csim=1 synth=1 cosim=1 export=1 tv_in=$PWD/data/test_in.txt tv_out=$PWD/data/test_out.txt tv_ref=$PWD/data/test_out_ref.txt
+vivado_hls -f run_hls.tcl csim=1 synth=1 cosim=1 export=1 tv_in=$PWD/data/tb_set1_inp.txt tv_out=$PWD/data/tb_set1_out.txt tv_ref=$PWD/data/tb_set1_out_ref.txt
 ```
+
+Before building the bit file, one need to export RTL (place, route, synthesis) using GUI.
 
 ## Making bit file for APd:
 ```
 cd $AP_FW_BASE_DIR
 git clone --recursive ssh://git@gitlab.cern.ch:7999/asvetek/phase2-gct.git
 cd $AP_FW_BASE_DIR/phase2-gct/
+```
+Edit the ruckus.tcl to point the project directory:
+for eg: "loadRuckusTcl $::env(TOP_DIR)/../CMSPhase2GCT/etaStitch/hls"
+```
 mkdir build
 make
 ```
