@@ -2,11 +2,12 @@
 
 Checkout existing GCT code and APx Core Firmware connector from:
 ```
-git clone git@github.com:varuns23/CMSPhase2GCT.git
+git clone -b dev2021 git@github.com:varuns23/CMSPhase2GCT.git
 cd CMSPhase2GCT
 source setEnv.sh #(uwlogin/beck independent)
 ```
 ## Algorithms:
+choose one of the algo you want to work on
 ```
 export algo = etaStitch  
 export algo = phiStitch 

@@ -27,7 +27,7 @@ end algoTopWrapper;
 
 architecture rtl of algoTopWrapper is
 
-  constant N_STREAMS_ALGO  : integer := 36;
+  constant N_STREAMS_ALGO  : integer := 32;
 
     signal axiStreamInSLR0  : AxiStreamMasterArray(0 to N_STREAMS_ALGO-1);
     signal axiStreamOutSLR0 : AxiStreamMasterArray(0 to N_STREAMS_ALGO-1);
@@ -67,11 +67,7 @@ architecture rtl of algoTopWrapper is
     28 => 84,
     29 => 85,
     30 => 86,
-    31 => 87,
-    32 => 88,
-    33 => 89,
-    34 => 90,
-    35 => 91
+    31 => 87
     );
 
   constant SLR_1_MAP_C : IntegerArray(0 to N_STREAMS_ALGO-1) := (
@@ -106,11 +102,7 @@ architecture rtl of algoTopWrapper is
     28 => 68,
     29 => 69,
     30 => 70,
-    31 => 71,
-    32 => 72,
-    33 => 73,
-    34 => 74,
-    35 => 75
+    31 => 71
     );
 
 begin
@@ -128,8 +120,8 @@ begin
 
 U_algo0: entity work.algoStreamWrapper
   generic map(
-    N_INPUT_STREAMS  => 36,
-    N_OUTPUT_STREAMS => 36
+    N_INPUT_STREAMS  => 32,
+    N_OUTPUT_STREAMS => 32
     )
   port map(
     -- Algo Control/Status Signals
@@ -148,8 +140,8 @@ U_algo0: entity work.algoStreamWrapper
 
 U_algo1: entity work.algoStreamWrapper
   generic map(
-    N_INPUT_STREAMS  => 36,
-    N_OUTPUT_STREAMS => 36
+    N_INPUT_STREAMS  => 32,
+    N_OUTPUT_STREAMS => 32
     )
   port map(
     -- Algo Control/Status Signals

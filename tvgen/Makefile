@@ -1,7 +1,9 @@
 CPP = g++
 CFLAGS = -std=c++11
 IPATH = ${XILINX_VIVADO}/include/
-IROOT = -g -I$ROOTSYS/include -L$ROOTSYS/lib `root-config --cflags` `root-config --libs` -lFoam -lMathMore
+#IROOT = -g -I$ROOTSYS/include -L$ROOTSYS/lib `root-config --cflags` `root-config --libs` -lFoam -lMathMore
+IROOT = -g -I$ROOTSYS/include -L$ROOTSYS/lib `root-config --cflags` `root-config --libs` -lMathMore
+#OBJ = tvgen.o
 OBJ = tvgen.o ../common/APxLinkData.o
 
 all: check-env tvgen
@@ -18,4 +20,4 @@ tvgen: $(OBJ)
 	$(CPP) -o $@ $^ $(CFLAGS) ${IROOT}
 
 clean:
-	rm -f tvgen *.o ../common/*.o
+	rm -f tvgen *.o 

@@ -5,7 +5,18 @@
 #include <ap_int.h>
 #include <hls_stream.h>
 
-#include "eta_stitch_parameters.h"
+// Number of data words per processing cycle/frame
+const int N_WORDS_PER_FRAME = 9;
+
+/** Algorithm specific parameters **/
+#define TOWERS_IN_ETA 17
+#define TOWERS_IN_PHI 32
+
+/** Link information **/
+
+#define N_INPUT_LINKS TOWERS_IN_PHI
+#define N_OUTPUT_LINKS TOWERS_IN_PHI
+
 
 typedef struct inputWord {
 	ap_uint<64> data;

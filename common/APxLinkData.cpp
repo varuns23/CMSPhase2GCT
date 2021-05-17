@@ -59,7 +59,8 @@ void APxLinkData::write(const string filename) const {
 			if (it2 == it1->second.end()) {
 				of << "-    -                   ";
 			} else {
-				of << "0x" << hex << setfill('0') << setw(2) << it2->second.user << " 0x" << setw(16) << it2->second.data << "  ";
+				//of << "0x" << hex << setfill('0') << setw(2) << it2->second.user << " 0x" << setw(16) << it2->second.data << "  ";
+				of << hex <<" 0x" << setfill('0') << setw(16) << it2->second.data << "  ";
 			}
 		}
 

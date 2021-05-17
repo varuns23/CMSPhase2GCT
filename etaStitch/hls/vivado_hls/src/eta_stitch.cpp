@@ -1,16 +1,15 @@
 #include <algorithm>
 #include <utility>
 
-#include "eta_stitch.h"
-#include "eta_stitch_parameters.h"
-#include "objects.h"
-
 #include <cstdlib>
 #include <sstream>
 
 #include <ap_axi_sdata.h>
 #include <ap_int.h>
 #include <hls_stream.h>
+
+#include "eta_stitch.h"
+#include "objects.h"
 
 using namespace std;
 
@@ -28,10 +27,15 @@ void stitch(bool stitchDir, Tower Ai, Tower Bi, Tower &Ao, Tower &Bo) {
 	ap_uint<10> clustered_et_pegged = (clustered_et_sum > 0x3FF) ? (ap_uint<10> ) 0x3FF : (ap_uint<10> ) clustered_et_sum;
 
 	// stitchDir == true -> eta stitch, stitchDir == false -> phi stitch
-	bool etaStitch = ETA_STITCH && (Ai.peak_eta == 4 && Bi.peak_eta == 0) && (Ai.peak_phi == Bi.peak_phi);
-	bool phiStitch = PHI_STITCH && (Ai.peak_phi == 4 && Bi.peak_phi == 0) && (Ai.peak_eta == Bi.peak_eta);
+	bool etaStitch = ETA_STITCH && (Ai.peak_phi == 4 && Bi.peak_phi == 0) && (Ai.peak_eta == Bi.peak_eta);
+	bool phiStitch = PHI_STITCH && (Ai.peak_eta == 4 && Bi.peak_eta == 0) && (Ai.peak_phi == Bi.peak_phi);
 
 	if (etaStitch || phiStitch) {
+
+#ifndef __SYNTHESIS__
+	   cout<<".. stitching "<<Ai.clustered_et<<"("<<Ai.peak_eta<<", "<<Ai.peak_phi<<") with "<<Bi.clustered_et<<"("<< Ai.peak_eta<<", "<< Bi.peak_phi<<")"<<endl;
+#endif
+
 		if (Ai.clustered_et > Bi.clustered_et) {
 			Ao.clustered_et = clustered_et_pegged;
 			Bo.clustered_et = 0;
@@ -61,7 +65,7 @@ void processInputStream(hls::stream<inputWord> &link_data, Tower twrs[TOWERS_IN_
 
 #pragma HLS INTERFACE axis port=link_data
 #pragma HLS INLINE
-#pragma HLS PIPELINE II=9
+#pragma HLS PIPELINE II=N_WORDS_PER_FRAME
 
 	ap_uint<64> data[N_WORDS_PER_FRAME];
 #pragma HLS ARRAY_PARTITION variable=data complete dim=1
@@ -145,6 +149,7 @@ void processOutputStream(Tower twrs[TOWERS_IN_ETA], hls::stream<outputWord> &lin
 
 void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outputWord> link_out[N_OUTPUT_LINKS]) {
 
+
 #pragma HLS INTERFACE axis port=link_in
 #pragma HLS INTERFACE axis port=link_out
 
@@ -171,6 +176,19 @@ void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outpu
 		}
 	}
 
+#ifndef __SYNTHESIS__
+  for(size_t phi=0; phi < TOWERS_IN_PHI/2; phi++){
+     for(size_t eta=0; eta< TOWERS_IN_ETA ; eta++){
+	if(twrs[phi][eta].clustered_et>0 || twrs[phi+TOWERS_IN_PHI/2][eta].clustered_et>0){
+	   cout<<"[("<< eta <<","<< phi <<") ("<< twrs[phi][eta].peak_eta <<","<< twrs[phi][eta].peak_phi <<")] = "<< twrs[phi][eta].clustered_et <<"/"<<twrs[phi][eta].total_et<<"  ||  ";
+	   cout<<"[("<< eta <<","<< phi <<") ("<< twrs[phi+TOWERS_IN_PHI/2][eta].peak_eta <<","<< twrs[phi+TOWERS_IN_PHI/2][eta].peak_phi <<")] = "<< twrs[phi+TOWERS_IN_PHI/2][eta].clustered_et <<"/"<<twrs[phi+TOWERS_IN_PHI/2][eta].total_et<<endl;
+
+	}
+    }
+ }
+
+#endif
+
 // make a copy of all towers, we'll overwrite only neighboring towers with stitched version
 	for (size_t phi = 0; phi < TOWERS_IN_PHI; phi++) {
 #pragma LOOP UNROLL
@@ -192,7 +210,7 @@ void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outpu
 		stitch(ETA_STITCH, twrs[27][eta], twrs[28][eta], twrsStitched[27][eta], twrsStitched[28][eta]);
 	}
 
-	outputPack: for (size_t lnk = 0; lnk < N_INPUT_LINKS; lnk++) {
+	outputPack: for (size_t lnk = 0; lnk < N_OUTPUT_LINKS; lnk++) {
 #pragma LOOP UNROLL
 		Tower twrs_tmp[TOWERS_IN_ETA];
 #pragma HLS ARRAY_PARTITION variable=twrs_tmp complete dim=0
@@ -202,8 +220,7 @@ void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outpu
 			twrs_tmp[eta] = twrsStitched[lnk][eta];
 
 		}
-
 		processOutputStream(twrs_tmp, link_out[lnk]);
-
 	}
+
 }

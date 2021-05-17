@@ -6,10 +6,14 @@ array set opt {
     synth  0
     cosim  0
     export 0
-    tv_in  "data/test_in.txt"
-    tv_out "data/test_out.txt"
-    tv_ref "data/test_out_ref.txt"
+    tv_in  "test_inp.txt"
+    tv_out "tb_out.txt"
+    tv_ref "tb_out_ref.txt"
 }
+#    tv_in  "tb_inp.txt"
+#    tv_in  "test_in.txt"
+#    tv_out "test_out.txt"
+#    tv_ref "test_out_ref.txt"
 
 foreach arg $::argv {
     foreach o [lsort [array names opt]] {
