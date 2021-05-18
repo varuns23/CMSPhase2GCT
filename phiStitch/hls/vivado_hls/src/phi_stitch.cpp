@@ -195,11 +195,12 @@ void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outpu
 	stitch(PHI_STITCH, twrs[10][16], twrs[28][0], twrsStitched[10][16], twrsStitched[28][0]);
 	stitch(PHI_STITCH, twrs[11][16], twrs[29][0], twrsStitched[11][16], twrsStitched[29][0]);
 	stitch(PHI_STITCH, twrs[12][16], twrs[30][0], twrsStitched[12][16], twrsStitched[30][0]);
-//---|	stitch(PHI_STITCH, twrs[13][16], twrs[31][0], twrsStitched[13][16], twrsStitched[31][0]);
-//---|	stitch(PHI_STITCH, twrs[14][16], twrs[32][0], twrsStitched[14][16], twrsStitched[32][0]);
-//---|	stitch(PHI_STITCH, twrs[15][16], twrs[33][0], twrsStitched[15][16], twrsStitched[33][0]);
-//---|	stitch(PHI_STITCH, twrs[16][16], twrs[34][0], twrsStitched[16][16], twrsStitched[34][0]);
-//---|	stitch(PHI_STITCH, twrs[17][16], twrs[35][0], twrsStitched[17][16], twrsStitched[35][0]);
+	stitch(PHI_STITCH, twrs[13][16], twrs[31][0], twrsStitched[13][16], twrsStitched[31][0]);
+	stitch(PHI_STITCH, twrs[14][16], twrs[32][0], twrsStitched[14][16], twrsStitched[32][0]);
+	stitch(PHI_STITCH, twrs[15][16], twrs[33][0], twrsStitched[15][16], twrsStitched[33][0]);
+	stitch(PHI_STITCH, twrs[16][16], twrs[34][0], twrsStitched[16][16], twrsStitched[34][0]);
+	stitch(PHI_STITCH, twrs[17][16], twrs[35][0], twrsStitched[17][16], twrsStitched[35][0]);
+
 //-| 	// now stitch in eta, look only for the towers that need stitching
 //-| 	for (size_t phi = 0; phi < TOWERS_IN_PHI; phi++) {
 //-| #pragma LOOP UNROLL
