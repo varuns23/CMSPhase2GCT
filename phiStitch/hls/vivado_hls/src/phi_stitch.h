@@ -1,35 +1,34 @@
-#ifndef __ALGO_TOP_H__
-#define __ALGO_TOP_H__
+#ifndef __ETA_STITCH_H__
+#define __ETA_STITCH_H__
 
 #include <stdint.h>
-#include <ap_axi_sdata.h>
 #include <ap_int.h>
 #include <hls_stream.h>
 
-#include "algo_top_parameters.h"
+// Number of data words per processing cycle/frame
+const int N_WORDS_PER_FRAME = 9;
 
-template<int D, int U>
-struct ap_axiu <D, U, 0, 0>{
-	ap_uint<D>       data;
-	ap_uint<U>       user;
-	ap_uint<1>       last;
-};
+/** Algorithm specific parameters **/
+#define TOWERS_IN_ETA 17
+#define TOWERS_IN_PHI 18
 
-namespace algo {
-        typedef ap_axiu<32, 8, 0, 0> axiword32;
-        typedef ap_axiu<64, 8, 0, 0> axiword64;
-        typedef ap_axiu<256, 8, 0, 0> axiword256;
-        typedef ap_axiu<320, 8, 0, 0> axiword320;
-        typedef ap_axiu<384, 8, 0, 0> axiword384;
-        typedef ap_axiu<448, 8, 0, 0> axiword448;
-        typedef ap_axiu<512, 8, 0, 0> axiword512;
-        typedef ap_axiu<576, 8, 0, 0> axiword576;
-}
+/** More common algorithm definitions, do not remove **/
+#define N_INPUT_LINKS	36
+#define N_OUTPUT_LINKS	36
 
-void algo_top(
 
-	hls::stream<algo::axiword576> link_in[N_INPUT_LINKS],
-	hls::stream<algo::axiword576> link_out[N_OUTPUT_LINKS]
-);
+typedef struct inputWord {
+	ap_uint<64> data;
+	ap_uint<8> user;
+	ap_uint<1> last;
+} inputWord;
 
-#endif /* !__ALGO_TOP_H__ */
+typedef struct outputWord {
+	ap_uint<64> data;
+	ap_uint<8> user;
+	ap_uint<1> last;
+} outputWord;
+
+void algoStream(hls::stream<inputWord> link_in[N_INPUT_LINKS], hls::stream<outputWord> link_out[N_OUTPUT_LINKS]);
+
+#endif /* !__ETA_STITCH_H__ */
